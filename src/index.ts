@@ -16,7 +16,7 @@ export type Options = CloneOptions &
         removeContainer?: boolean;
     };
 
-const html2canvas = (element: HTMLElement, options: Partial<Options> = {}): Promise<HTMLCanvasElement | null> => {
+const html2canvas = (element: HTMLElement, options: Partial<Options> = {}): Promise<HTMLCanvasElement> => {
     return renderElement(element, options);
 };
 
@@ -26,7 +26,7 @@ if (typeof window !== 'undefined') {
     CacheStorage.setContext(window);
 }
 
-const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<HTMLCanvasElement | null> => {
+const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<HTMLCanvasElement> => {
     if (!element || typeof element !== 'object') {
         return Promise.reject('Invalid element provided as first argument');
     }
