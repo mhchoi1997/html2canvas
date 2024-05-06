@@ -501,6 +501,7 @@ const createIFrameContainer = (ownerDocument: Document, bounds: Bounds): HTMLIFr
     cloneIframeContainer.style.left = '-10000px';
     cloneIframeContainer.style.top = '0px';
     cloneIframeContainer.style.border = '0';
+    cloneIframeContainer.setAttribute('data-wsharing-skipmutation', 'true');
     cloneIframeContainer.width = bounds.width.toString();
     cloneIframeContainer.height = bounds.height.toString();
     cloneIframeContainer.scrolling = 'no'; // ios won't scroll without it
