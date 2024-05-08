@@ -6,6 +6,7 @@ import {CacheStorage} from './core/cache-storage';
 import {CanvasRenderer, RenderConfigurations, RenderOptions} from './render/canvas/canvas-renderer';
 import {ForeignObjectRenderer} from './render/canvas/foreignobject-renderer';
 import {Context, ContextOptions} from './core/context';
+import './core/font';
 
 export type Options = CloneOptions &
     WindowOptions &
@@ -15,6 +16,8 @@ export type Options = CloneOptions &
         foreignObjectRendering: boolean;
         removeContainer?: boolean;
     };
+
+// 폰트 끝
 
 const html2canvas = (element: HTMLElement, options: Partial<Options> = {}): Promise<HTMLCanvasElement> => {
     return renderElement(element, options);

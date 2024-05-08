@@ -35,6 +35,7 @@ export class ForeignObjectRenderer extends Renderer {
             element
         );
 
+        // 원본 svg와 loadSerializedSVG결과와 상이하게 나오는 문제 => input value변경시 변경된 값이 아닌 초기값으로 표시됨.
         const img = await loadSerializedSVG(svg);
 
         if (this.options.backgroundColor) {

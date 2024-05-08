@@ -143,14 +143,12 @@ export const createForeignObjectSVG = (
     const foreignObject = document.createElementNS(xmlns, 'foreignObject');
     svg.setAttributeNS(null, 'width', width.toString());
     svg.setAttributeNS(null, 'height', height.toString());
-    svg.setAttribute('data-wsharing-skipmutation', 'true');
 
     foreignObject.setAttributeNS(null, 'width', '100%');
     foreignObject.setAttributeNS(null, 'height', '100%');
     foreignObject.setAttributeNS(null, 'x', x.toString());
     foreignObject.setAttributeNS(null, 'y', y.toString());
     foreignObject.setAttributeNS(null, 'externalResourcesRequired', 'true');
-    foreignObject.setAttribute('data-wsharing-skipmutation', 'true');
     svg.appendChild(foreignObject);
 
     foreignObject.appendChild(node);

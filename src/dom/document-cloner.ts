@@ -7,6 +7,7 @@ import {
     isHTMLElementNode,
     isIFrameElement,
     isImageElement,
+    isInputElement,
     isScriptElement,
     isSelectElement,
     isSlotElement,
@@ -24,6 +25,7 @@ import {CSSParsedCounterDeclaration, CSSParsedPseudoDeclaration} from '../css/in
 import {getQuote} from '../css/property-descriptors/quotes';
 import {Context} from '../core/context';
 import {DebuggerType, isDebugging} from '../core/debugger';
+import {fontFaces} from '../core/font';
 
 export interface CloneOptions {
     ignoreElements?: (element: Element) => boolean;
@@ -147,10 +149,14 @@ export class DocumentCloner {
             return this.createCanvasClone(node);
         }
         if (isVideoElement(node)) {
+            // video를 canvas가 아닌 image로 반환해야한다.
             return this.createVideoClone(node);
         }
         if (isStyleElement(node)) {
             return this.createStyleClone(node);
+        }
+        if (isImageElement(node)) {
+            return this.createImageClone(node);
         }
 
         const clone = node.cloneNode(false) as T;
@@ -203,6 +209,22 @@ export class DocumentCloner {
         return node.cloneNode(false) as HTMLStyleElement;
     }
 
+    createImageClone(node: HTMLImageElement): HTMLImageElement {
+        // image -> canvas;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = node.width;
+        canvas.height = node.height;
+
+        ctx?.drawImage(node, 0, 0, node.width, node.height);
+
+        // 외부 이미지를 왜 못불러오는가? => 내부 이미지는 canvas로 만든 다음 image로 만든다.
+        const image = new Image();
+        image.src = canvas.toDataURL();
+        return image;
+    }
+
     createCanvasClone(canvas: HTMLCanvasElement): HTMLImageElement | HTMLCanvasElement {
         if (this.options.inlineImages && canvas.ownerDocument) {
             const img = canvas.ownerDocument.createElement('img');
@@ -247,12 +269,14 @@ export class DocumentCloner {
         return clonedCanvas;
     }
 
-    createVideoClone(video: HTMLVideoElement): HTMLCanvasElement {
+    createVideoClone(video: HTMLVideoElement): HTMLImageElement {
         const canvas = video.ownerDocument.createElement('canvas');
 
         canvas.width = video.offsetWidth;
         canvas.height = video.offsetHeight;
         const ctx = canvas.getContext('2d');
+        const image = new Image();
+        image.setAttribute('crossorigin', 'anonymous');
 
         try {
             if (ctx) {
@@ -260,8 +284,9 @@ export class DocumentCloner {
                 if (!this.options.allowTaint) {
                     ctx.getImageData(0, 0, canvas.width, canvas.height);
                 }
+                image.src = canvas.toDataURL('image/png');
             }
-            return canvas;
+            return image;
         } catch (e) {
             this.context.logger.info(`Unable to clone video as it is tainted`, video);
         }
@@ -270,7 +295,8 @@ export class DocumentCloner {
 
         blankCanvas.width = video.offsetWidth;
         blankCanvas.height = video.offsetHeight;
-        return blankCanvas;
+        image.src = blankCanvas.toDataURL();
+        return image;
     }
 
     appendChildNode(clone: HTMLElement | SVGElement, child: Node, copyStyles: boolean): void {
@@ -303,6 +329,16 @@ export class DocumentCloner {
         }
     }
 
+    loadFont(node: Node) {
+        if (node.nodeName === 'BODY') {
+            return fontFaces.resolveAll().then(function (cssText: string) {
+                const styleNode = document.createElement('style');
+                node.appendChild(styleNode);
+                styleNode.appendChild(document.createTextNode(cssText));
+            });
+        }
+    }
+
     cloneNode(node: Node, copyStyles: boolean): Node {
         if (isTextNode(node)) {
             return document.createTextNode(node.data);
@@ -316,6 +352,10 @@ export class DocumentCloner {
 
         if (window && isElementNode(node) && (isHTMLElementNode(node) || isSVGElementNode(node))) {
             const clone = this.createElementClone(node);
+
+            // 폰트 불러오기
+            this.loadFont(clone);
+
             clone.style.transitionProperty = 'none';
 
             const style = window.getComputedStyle(node);
@@ -362,11 +402,45 @@ export class DocumentCloner {
                 this.scrolledElements.push([clone, node.scrollLeft, node.scrollTop]);
             }
 
-            if (
+            if (isInputElement(node) && isInputElement(clone)) {
+                // 타입체크
+                const type = node.type;
+                if (type === 'text' || type === 'number' || type === 'color') {
+                    clone.setAttribute('value', node.value);
+                }
+                switch (type) {
+                    case 'submit':
+                    case 'button':
+                    case 'reset':
+                    case 'hidden':
+                        break;
+                    case 'checkbox':
+                    case 'radio':
+                        // checked
+                        node.checked ? clone.setAttribute('checked', '') : clone.removeAttribute('checked');
+                        break;
+                    default:
+                        clone.setAttribute('value', node.value);
+                }
+            } else if (
                 (isTextareaElement(node) || isSelectElement(node)) &&
                 (isTextareaElement(clone) || isSelectElement(clone))
             ) {
                 clone.value = node.value;
+                if (isTextareaElement(node) && isTextareaElement(clone)) {
+                    clone.innerHTML = clone.value;
+                } else if (isSelectElement(node) && isSelectElement(clone)) {
+                    // node.value은 option.value값을 찾아서 selected속성을 추가한다.
+                    const value = clone.value;
+                    const options = Array.from(clone.options) as Array<HTMLOptionElement>;
+                    options.forEach((option) => {
+                        if (option.value === value) {
+                            option.setAttribute('selected', '');
+                        } else {
+                            option.removeAttribute('selected');
+                        }
+                    });
+                }
             }
 
             return clone;
@@ -501,11 +575,11 @@ const createIFrameContainer = (ownerDocument: Document, bounds: Bounds): HTMLIFr
     cloneIframeContainer.style.left = '-10000px';
     cloneIframeContainer.style.top = '0px';
     cloneIframeContainer.style.border = '0';
-    cloneIframeContainer.setAttribute('data-wsharing-skipmutation', 'true');
     cloneIframeContainer.width = bounds.width.toString();
     cloneIframeContainer.height = bounds.height.toString();
     cloneIframeContainer.scrolling = 'no'; // ios won't scroll without it
     cloneIframeContainer.setAttribute(IGNORE_ATTRIBUTE, 'true');
+    cloneIframeContainer.setAttribute('data-wsharing-skipmutation', 'true');
     ownerDocument.body.appendChild(cloneIframeContainer);
 
     return cloneIframeContainer;
