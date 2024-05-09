@@ -168,7 +168,8 @@ function newFontFaces() {
                     });
 
                 function urlAsRegex(url: string) {
-                    return new RegExp('(url\\([\'"]?)(' + escape(url) + ')([\'"]?\\))', 'g');
+                    // return new RegExp('(url\\([\'"]?)(' + escape(url) + ')([\'"]?\\))', 'g');
+                    return new RegExp('(url\\([\'"]?)(' + url + ')([\'"]?\\))', 'g');
                 }
             }
 
