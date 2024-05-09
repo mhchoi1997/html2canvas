@@ -25,7 +25,6 @@ import {CSSParsedCounterDeclaration, CSSParsedPseudoDeclaration} from '../css/in
 import {getQuote} from '../css/property-descriptors/quotes';
 import {Context} from '../core/context';
 import {DebuggerType, isDebugging} from '../core/debugger';
-import {fontFaces} from '../core/font';
 
 export interface CloneOptions {
     ignoreElements?: (element: Element) => boolean;
@@ -43,6 +42,7 @@ export interface WindowOptions {
 export type CloneConfigurations = CloneOptions & {
     inlineImages: boolean;
     copyStyles: boolean;
+    fontStyle?: string | null;
 };
 
 const IGNORE_ATTRIBUTE = 'data-html2canvas-ignore';
@@ -329,13 +329,13 @@ export class DocumentCloner {
         }
     }
 
-    loadFont(node: Node) {
-        if (node.nodeName === 'BODY') {
-            return fontFaces.resolveAll().then(function (cssText: string) {
-                const styleNode = document.createElement('style');
-                node.appendChild(styleNode);
-                styleNode.appendChild(document.createTextNode(cssText));
-            });
+    adjustHeadFontStyle(node: Node): void {
+        const fontStyle = this.options.fontStyle;
+        // body내 스타일을 적용합시다.
+        if (node.nodeName === 'BODY' && fontStyle !== null && fontStyle !== undefined) {
+            const styleNode = document.createElement('style');
+            node.appendChild(styleNode);
+            styleNode.appendChild(document.createTextNode(fontStyle));
         }
     }
 
@@ -353,9 +353,8 @@ export class DocumentCloner {
         if (window && isElementNode(node) && (isHTMLElementNode(node) || isSVGElementNode(node))) {
             const clone = this.createElementClone(node);
 
-            // 폰트 불러오기
-            this.loadFont(clone);
-
+            // 폰트 적용하기
+            this.adjustHeadFontStyle(clone);
             clone.style.transitionProperty = 'none';
 
             const style = window.getComputedStyle(node);

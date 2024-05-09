@@ -7,6 +7,7 @@ import {CanvasRenderer, RenderConfigurations, RenderOptions} from './render/canv
 import {ForeignObjectRenderer} from './render/canvas/foreignobject-renderer';
 import {Context, ContextOptions} from './core/context';
 import './core/font';
+import {fontFaces} from './core/font';
 
 export type Options = CloneOptions &
     WindowOptions &
@@ -28,6 +29,14 @@ export default html2canvas;
 if (typeof window !== 'undefined') {
     CacheStorage.setContext(window);
 }
+
+const loadFontStyle = async (): Promise<string> => {
+    return new Promise((resolve) => {
+        fontFaces.resolveAll().then(function (cssText: string) {
+            resolve(cssText);
+        });
+    });
+};
 
 const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<HTMLCanvasElement> => {
     if (!element || typeof element !== 'object') {
@@ -90,8 +99,16 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         } scrolled to ${-windowBounds.left},${-windowBounds.top}`
     );
 
+    // Font가져오기.
+    const fontStyle = await loadFontStyle();
+    console.warn('fontText -----', fontStyle);
+    if (fontStyle != null) {
+        cloneOptions.fontStyle = fontStyle;
+    }
+
     const documentCloner = new DocumentCloner(context, element, cloneOptions);
     const clonedElement = documentCloner.clonedReferenceElement;
+
     if (!clonedElement) {
         return Promise.reject(`Unable to find element in cloned iframe`);
     }
