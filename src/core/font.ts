@@ -1,23 +1,6 @@
-// 폰트 관련 추가
-export const fontFaces = newFontFaces();
-
-function newFontFaces() {
-    return {
-        resolveAll: resolveAll,
-        impl: {
-            readAll: readAll
-        }
-    };
-
-    function asArray(arrayLike: any) {
-        const array = [];
-        const length = arrayLike.length;
-        for (let i = 0; i < length; i++) array.push(arrayLike[i]);
-        return array;
-    }
-
-    function resolveAll() {
-        return readAll()
+class Font {
+    resolveAll() {
+        return this._readAll()
             .then(function (webFonts) {
                 return Promise.all(
                     webFonts.map(function (webFont: any) {
@@ -30,8 +13,8 @@ function newFontFaces() {
             });
     }
 
-    function readAll() {
-        return Promise.resolve(asArray(document.styleSheets))
+    private _readAll() {
+        return Promise.resolve(Font.asArray(document.styleSheets))
             .then(getCssRules)
             .then(selectWebFontRules)
             .then(function (rules) {
@@ -204,9 +187,9 @@ function newFontFaces() {
             const cssRules: any[] = [];
             styleSheets.forEach(function (sheet: any) {
                 try {
-                    asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
+                    Font.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
                 } catch (e) {
-                    console.warn('Error while reading CSS rules from ' + sheet.href, e.toString());
+                    console.warn(`Error while reading CSS rules from ${sheet.href}, ${e.toString()}`);
                 }
             });
             return cssRules;
@@ -224,4 +207,14 @@ function newFontFaces() {
             };
         }
     }
+
+    static asArray(arrayLike: any) {
+        const array = [];
+        const length = arrayLike.length;
+        for (let i = 0; i < length; i++) array.push(arrayLike[i]);
+        return array;
+    }
 }
+
+// 폰트 관련 추가
+export const fontFaces = new Font();
