@@ -211,7 +211,6 @@ export class DocumentCloner {
 
     createImageClone(node: HTMLImageElement): HTMLImageElement {
         // image -> canvas;
-        debugger;
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -220,7 +219,7 @@ export class DocumentCloner {
 
         ctx?.drawImage(node, 0, 0, node.width, node.height);
 
-        // 외부 이미지를 왜 못불러오는가? => 내부 이미지는 canvas로 만든 다음 image로 만든다.
+        // 외부 이미지를 왜 못불러오는가? => 이미지 URL을 base64로 변환 필요
         const image = new Image();
         image.src = canvas.toDataURL();
         return image;
