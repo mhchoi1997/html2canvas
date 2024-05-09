@@ -101,7 +101,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
     // Font가져오기.
     const fontStyle = await loadFontStyle();
-    console.warn('fontText -----', fontStyle);
+
     if (fontStyle != null) {
         cloneOptions.fontStyle = fontStyle;
     }
