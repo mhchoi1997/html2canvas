@@ -20,7 +20,7 @@ export type Options = CloneOptions &
 
 // 폰트 끝
 
-const html2canvas = (element: HTMLElement, options: Partial<Options> = {}): Promise<HTMLCanvasElement> => {
+const html2canvas = (element: HTMLElement, options: Partial<Options> = {}): Promise<string> => {
     return renderElement(element, options);
 };
 
@@ -38,7 +38,7 @@ const loadFontStyle = async (): Promise<string> => {
     });
 };
 
-const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<HTMLCanvasElement> => {
+const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<string> => {
     if (!element || typeof element !== 'object') {
         return Promise.reject('Invalid element provided as first argument');
     }
@@ -132,12 +132,11 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         height: opts.height ?? Math.ceil(height)
     };
 
-    let canvas;
-
+    let imageUrl;
     if (foreignObjectRendering) {
         context.logger.debug(`Document cloned, using foreign object rendering`);
         const renderer = new ForeignObjectRenderer(context, renderOptions);
-        canvas = await renderer.render(clonedElement);
+        imageUrl = await renderer.render(clonedElement);
     } else {
         context.logger.debug(
             `Document cloned, element located at ${left},${top} with size ${width}x${height} using computed rendering`
@@ -155,7 +154,8 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         );
 
         const renderer = new CanvasRenderer(context, renderOptions);
-        canvas = await renderer.render(root);
+        const canvas = await renderer.render(root);
+        imageUrl = canvas.toDataURL();
     }
 
     if (opts.removeContainer ?? true) {
@@ -165,7 +165,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
     }
 
     context.logger.debug(`Finished rendering`);
-    return canvas;
+    return imageUrl;
 };
 
 const parseBackgroundColor = (context: Context, element: HTMLElement, backgroundColorOverride?: string | null) => {

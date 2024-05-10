@@ -1,9 +1,14 @@
+interface IPropertyDescriptor<T> {
+    resolve: () => Promise<T>;
+    src: () => T;
+}
+
 class Font {
-    resolveAll() {
+    async resolveAll() {
         return this._readAll()
             .then(function (webFonts) {
                 return Promise.all(
-                    webFonts.map(function (webFont: any) {
+                    webFonts.map(function (webFont: IPropertyDescriptor<string>) {
                         return webFont.resolve();
                     })
                 );
@@ -30,7 +35,7 @@ class Font {
             return url.search(/^(data:)/) !== -1;
         }
 
-        function inlineAll(string: string, baseUrl: any, get: any) {
+        async function inlineAll(string: string, baseUrl: string) {
             if (nothingToInline()) return Promise.resolve(string);
 
             function readUrls(string: string) {
@@ -56,7 +61,7 @@ class Font {
                 return a.href;
             }
 
-            function dataAsUrl(content: any, type: any) {
+            function dataAsUrl(content: unknown, type: string) {
                 return 'data:' + type + ';base64,' + content;
             }
 
@@ -91,7 +96,7 @@ class Font {
             function mimeType(url: string) {
                 const resourceMimes = mimes();
                 const extension = parseExtension(url).toLowerCase() as keyof typeof resourceMimes;
-                return mimes()[extension] || '';
+                return mimes()[extension];
             }
 
             function getAndEncode(url: string) {
@@ -137,12 +142,12 @@ class Font {
                 });
             }
 
-            function inline(string: string, url: string, baseUrl: string, get: any) {
+            async function inline(string: string, url: string, baseUrl: string) {
                 return Promise.resolve(url)
                     .then(function (url) {
                         return baseUrl ? resolveUrl(url, baseUrl) : url;
                     })
-                    .then(get || getAndEncode)
+                    .then(getAndEncode)
                     .then(function (data) {
                         return dataAsUrl(data, mimeType(url));
                     })
@@ -162,7 +167,7 @@ class Font {
                     let done = Promise.resolve(string);
                     urls.forEach(function (url) {
                         done = done.then(function (string) {
-                            return inline(string, url, baseUrl, get);
+                            return inline(string, url, baseUrl);
                         });
                     });
                     return done;
@@ -173,19 +178,19 @@ class Font {
             }
         }
 
-        function selectWebFontRules(cssRules: any) {
+        function selectWebFontRules(cssRules: Array<CSSRule>) {
             return cssRules
-                .filter(function (rule: any) {
+                .filter(function (rule: CSSRule) {
                     return rule.type === CSSRule.FONT_FACE_RULE;
                 })
-                .filter(function (rule: any) {
+                .filter(function (rule: CSSFontFaceRule) {
                     return shouldProcess(rule.style.getPropertyValue('src'));
                 });
         }
 
-        function getCssRules(styleSheets: any): any[] {
-            const cssRules: any[] = [];
-            styleSheets.forEach(function (sheet: any) {
+        function getCssRules(styleSheets: Array<CSSStyleSheet>): Array<CSSRule> {
+            const cssRules: Array<CSSRule> = [];
+            styleSheets.forEach(function (sheet: CSSStyleSheet) {
                 try {
                     Font.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
                 } catch (e) {
@@ -195,11 +200,11 @@ class Font {
             return cssRules;
         }
 
-        function newWebFont(webFontRule: any) {
+        function newWebFont(webFontRule: CSSFontFaceRule): IPropertyDescriptor<string> {
             return {
-                resolve: function resolve() {
-                    const baseUrl = (webFontRule.parentStyleSheet || {}).href;
-                    return inlineAll(webFontRule.cssText, baseUrl, null);
+                resolve: function () {
+                    const baseUrl = (webFontRule.parentStyleSheet || {}).href ?? '';
+                    return inlineAll(webFontRule.cssText, baseUrl);
                 },
                 src: function () {
                     return webFontRule.style.getPropertyValue('src');
@@ -208,7 +213,8 @@ class Font {
         }
     }
 
-    static asArray(arrayLike: any) {
+    // 유사 배열 객체를 받아서 배열로 변환시켜준다.
+    static asArray(arrayLike: ArrayLike<unknown>) {
         const array = [];
         const length = arrayLike.length;
         for (let i = 0; i < length; i++) array.push(arrayLike[i]);

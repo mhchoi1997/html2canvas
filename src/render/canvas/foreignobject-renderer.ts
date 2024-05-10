@@ -1,6 +1,6 @@
 import {RenderConfigurations} from './canvas-renderer';
 import {createForeignObjectSVG} from '../../core/features';
-import {asString} from '../../css/types/color';
+// import {asString} from '../../css/types/color';
 import {Renderer} from '../renderer';
 import {Context} from '../../core/context';
 
@@ -26,36 +26,95 @@ export class ForeignObjectRenderer extends Renderer {
         );
     }
 
-    async render(element: HTMLElement): Promise<HTMLCanvasElement> {
-        const svg = createForeignObjectSVG(
-            this.options.width * this.options.scale,
-            this.options.height * this.options.scale,
-            this.options.scale,
-            this.options.scale,
-            element
-        );
+    async render(element: HTMLElement): Promise<string> {
+        return new Promise((resolve) => {
+            const svg = createForeignObjectSVG(
+                this.options.width * this.options.scale,
+                this.options.height * this.options.scale,
+                this.options.scale,
+                this.options.scale,
+                element
+            );
 
-        // 원본 svg와 loadSerializedSVG결과와 상이하게 나오는 문제 => input value변경시 변경된 값이 아닌 초기값으로 표시됨.
-        const img = await loadSerializedSVG(svg);
+            // 원본 svg와 loadSerializedSVG결과와 상이하게 나오는 문제 => input value변경시 변경된 값이 아닌 초기값으로 표시됨.
+            const svgString = new XMLSerializer().serializeToString(svg);
+            const svgBlob = new Blob([svgString], {
+                type: 'image/svg+xml;charset=utf-8'
+            });
+            const imgUrl = URL.createObjectURL(svgBlob);
 
-        if (this.options.backgroundColor) {
-            this.ctx.fillStyle = asString(this.options.backgroundColor);
-            this.ctx.fillRect(0, 0, this.options.width * this.options.scale, this.options.height * this.options.scale);
-        }
+            console.warn(imgUrl);
 
-        this.ctx.drawImage(img, -this.options.x * this.options.scale, -this.options.y * this.options.scale);
+            async function getAndEncode(url: string) {
+                const TIMEOUT = 30000;
 
-        return this.canvas;
+                return new Promise(function (resolve) {
+                    const request = new XMLHttpRequest();
+
+                    request.onreadystatechange = done;
+                    request.ontimeout = timeout;
+                    request.responseType = 'blob';
+                    request.timeout = TIMEOUT;
+                    request.open('GET', url, true);
+                    request.send();
+
+                    function done() {
+                        if (request.readyState !== 4) return;
+
+                        if (request.status !== 200) {
+                            fail('cannot fetch resource: ' + url + ', status: ' + request.status);
+                            return;
+                        }
+
+                        const encoder = new FileReader();
+                        encoder.onloadend = function () {
+                            if (typeof encoder.result == 'string') {
+                                const content = encoder.result.split(/,/)[1];
+                                resolve(content);
+                            }
+                            resolve('');
+                        };
+                        encoder.readAsDataURL(request.response);
+                    }
+
+                    function timeout() {
+                        fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
+                    }
+
+                    function fail(message: string) {
+                        console.error(message);
+                        resolve('');
+                    }
+                });
+            }
+
+            function dataAsUrl(content: unknown, type: string) {
+                return 'data:' + type + ';base64,' + content;
+            }
+
+            getAndEncode(imgUrl)
+                .then((content: string) => {
+                    return dataAsUrl(content, 'image/svg+xml');
+                })
+                .then((dataUrl: string) => {
+                    const image = new Image();
+                    image.src = dataUrl;
+                    image.onload = function () {
+                        // document.body.append(image);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+
+                        const ctx = canvas.getContext('2d');
+
+                        ctx?.drawImage(image, 0, 0);
+
+                        const url = canvas.toDataURL('image/png');
+                        resolve(url);
+                    };
+                });
+
+            // resolve(imgUrl);
+        });
     }
 }
-
-export const loadSerializedSVG = (svg: Node): Promise<HTMLImageElement> =>
-    new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => {
-            resolve(img);
-        };
-        img.onerror = reject;
-
-        img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(svg))}`;
-    });
