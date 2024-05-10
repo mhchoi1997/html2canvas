@@ -1,0 +1,74 @@
+body {
+    margin: 10px;
+    border: 2px solid red;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+span {
+    border: 3px solid skyblue;
+    font-size: 18px;
+    box-shadow: 5px 5px 5px #999;
+    line-height: 3;
+    border-radius: 10px;
+}
+
+.span1 {
+    -webkit-box-decoration-break: slice;
+    -moz-box-decoration-break: slice;
+    box-decoration-break: slice;
+}
+.span2 {
+    -webkit-box-decoration-break: clone;
+    -moz-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+.span3,
+.span4 {
+    display: block;
+}
+.span3 {
+    -webkit-box-decoration-break: slice;
+    -moz-box-decoration-break: slice;
+    box-decoration-break: slice;
+}
+.span4 {
+    -webkit-box-decoration-break: clone;
+    -moz-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+#test1 {
+    width: 100px;
+    height: 100px;
+    margin: 20px;
+    background-color: green;
+    box-shadow: 5px 0 10px 3px rgba(0, 0, 0, 0.5);
+    display: inline-block;
+}
+
+#test2 {
+    width: 100px;
+    height: 100px;
+    margin: 20px;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    display: inline-block;
+}
+
+.test3 {
+    background-image: url('https://tistory1.daumcdn.net/tistory/783187/skin/images/bg1-min.jpg');
+    background-color: #4390e1;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: multiply;
+    height: 200px;
+}
+
+.test3 > p {
+    color: white;
+    text-align: center;
+    margin: 0;
+}

@@ -17,4 +17,4 @@ debug.log
 tests/reftests.js
 *.log
 .rpt2_cache
-/examples
+/examples/fonts
