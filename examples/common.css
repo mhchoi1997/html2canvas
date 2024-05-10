@@ -3,7 +3,7 @@ body {
     border: 2px solid red;
     padding: 10px;
     box-sizing: border-box;
-    background-color: #fff;
+    /* background-color: #fff; */
 }
 
 span {
@@ -59,11 +59,11 @@ span {
 
 .test3 {
     background-image: url('https://tistory1.daumcdn.net/tistory/783187/skin/images/bg1-min.jpg');
-    background-color: #4390e1;
+    /* background-color: #4390e1; */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-blend-mode: multiply;
+    /* background-blend-mode: multiply; */
     height: 200px;
 }
 

@@ -1,8 +1,9 @@
 import {RenderConfigurations} from './canvas-renderer';
 import {createForeignObjectSVG} from '../../core/features';
-// import {asString} from '../../css/types/color';
 import {Renderer} from '../renderer';
 import {Context} from '../../core/context';
+import {Resource} from '../../core/font';
+import {asString} from '../../css/types/color';
 
 export class ForeignObjectRenderer extends Renderer {
     canvas: HTMLCanvasElement;
@@ -43,69 +44,29 @@ export class ForeignObjectRenderer extends Renderer {
             });
             const imgUrl = URL.createObjectURL(svgBlob);
 
-            console.warn(imgUrl);
-
-            async function getAndEncode(url: string) {
-                const TIMEOUT = 30000;
-
-                return new Promise(function (resolve) {
-                    const request = new XMLHttpRequest();
-
-                    request.onreadystatechange = done;
-                    request.ontimeout = timeout;
-                    request.responseType = 'blob';
-                    request.timeout = TIMEOUT;
-                    request.open('GET', url, true);
-                    request.send();
-
-                    function done() {
-                        if (request.readyState !== 4) return;
-
-                        if (request.status !== 200) {
-                            fail('cannot fetch resource: ' + url + ', status: ' + request.status);
-                            return;
-                        }
-
-                        const encoder = new FileReader();
-                        encoder.onloadend = function () {
-                            if (typeof encoder.result == 'string') {
-                                const content = encoder.result.split(/,/)[1];
-                                resolve(content);
-                            }
-                            resolve('');
-                        };
-                        encoder.readAsDataURL(request.response);
-                    }
-
-                    function timeout() {
-                        fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
-                    }
-
-                    function fail(message: string) {
-                        console.error(message);
-                        resolve('');
-                    }
-                });
-            }
-
-            function dataAsUrl(content: unknown, type: string) {
-                return 'data:' + type + ';base64,' + content;
-            }
-
-            getAndEncode(imgUrl)
+            Resource.getAndEncode(imgUrl)
                 .then((content: string) => {
-                    return dataAsUrl(content, 'image/svg+xml');
+                    return Resource.dataAsUrl(content, 'image/svg+xml');
                 })
                 .then((dataUrl: string) => {
                     const image = new Image();
                     image.src = dataUrl;
-                    image.onload = function () {
-                        // document.body.append(image);
+                    image.onload = () => {
                         const canvas = document.createElement('canvas');
                         canvas.width = image.width;
                         canvas.height = image.height;
 
-                        const ctx = canvas.getContext('2d');
+                        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+                        if (this.options.backgroundColor) {
+                            ctx.fillStyle = asString(this.options.backgroundColor);
+                            ctx.fillRect(
+                                0,
+                                0,
+                                this.options.width * this.options.scale,
+                                this.options.height * this.options.scale
+                            );
+                        }
 
                         ctx?.drawImage(image, 0, 0);
 
@@ -113,8 +74,6 @@ export class ForeignObjectRenderer extends Renderer {
                         resolve(url);
                     };
                 });
-
-            // resolve(imgUrl);
         });
     }
 }

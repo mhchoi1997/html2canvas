@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
-        <script src="./dom-to-image.js" type="text/javascript"></script>
+        <script src="./media/dom-to-image.js" type="text/javascript"></script>
         <script src="../dist/html2canvas.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
         <link rel="stylesheet" href="./common.css" />
@@ -152,20 +152,20 @@
                 <p>로컬 리소스</p>
                 <div style="display: flex">
                     <div>
-                        <img width="300" height="300" src="./a.png" alt="임시 이미지" />
-                        <img src="./happy.svg" alt="" srcset="" width="300" height="300" />
+                        <img width="300" height="300" src="./media/a.png" alt="임시 이미지" />
+                        <img src="./media/happy.svg" alt="" srcset="" width="300" height="300" />
                     </div>
                     <div>
-                        <video width="300" height="300" src="./flower.webm" controls></video>
+                        <video width="300" height="300" src="./media/flower.webm" controls></video>
                     </div>
                     <div>
-                        <audio width="300" height="300" controls src="./t-rex-roar.mp3"></audio>
+                        <audio width="300" height="300" controls src="./media/t-rex-roar.mp3"></audio>
                     </div>
                 </div>
             </div>
             <div>
                 <p>iframe</p>
-                <iframe src="../demo.html" frameborder="0"></iframe>
+                <iframe src="./demo.html" frameborder="0"></iframe>
             </div>
         </div>
         <script>
@@ -181,7 +181,9 @@
                     html2canvas(document.body, options).then((imageUrl) => {
                         const anchor = document.createElement('a');
                         anchor.display = 'none';
-                        anchor.href = imageUrl.toDataURL();
+                        // fork후 수정한 버전은 imageURL으로 반환하도록 수정
+                        // anchor.href = imageUrl.toDataURL();
+                        anchor.href = imageUrl;
                         anchor.download = 'html2canvas_canvas';
                         document.body.append(anchor);
                         anchor.click();

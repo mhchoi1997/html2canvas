@@ -3,6 +3,55 @@ interface IPropertyDescriptor<T> {
     src: () => T;
 }
 
+export class Resource {
+    static async getAndEncode(url: string) {
+        const TIMEOUT = 30000;
+
+        return new Promise(function (resolve) {
+            const request = new XMLHttpRequest();
+
+            request.onreadystatechange = done;
+            request.ontimeout = timeout;
+            request.responseType = 'blob';
+            request.timeout = TIMEOUT;
+            request.open('GET', url, true);
+            request.send();
+
+            function done() {
+                if (request.readyState !== 4) return;
+
+                if (request.status !== 200) {
+                    fail('cannot fetch resource: ' + url + ', status: ' + request.status);
+                    return;
+                }
+
+                const encoder = new FileReader();
+                encoder.onloadend = function () {
+                    if (typeof encoder.result == 'string') {
+                        const content = encoder.result.split(/,/)[1];
+                        resolve(content);
+                    }
+                    resolve('');
+                };
+                encoder.readAsDataURL(request.response);
+            }
+
+            function timeout() {
+                fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
+            }
+
+            function fail(message: string) {
+                console.error(message);
+                resolve('');
+            }
+        });
+    }
+
+    static dataAsUrl(content: unknown, type: string) {
+        return 'data:' + type + ';base64,' + content;
+    }
+}
+
 class Font {
     async resolveAll() {
         return this._readAll()
@@ -99,55 +148,55 @@ class Font {
                 return mimes()[extension];
             }
 
-            function getAndEncode(url: string) {
-                const TIMEOUT = 30000;
+            // function getAndEncode(url: string) {
+            //     const TIMEOUT = 30000;
 
-                return new Promise(function (resolve) {
-                    const request = new XMLHttpRequest();
+            //     return new Promise(function (resolve) {
+            //         const request = new XMLHttpRequest();
 
-                    request.onreadystatechange = done;
-                    request.ontimeout = timeout;
-                    request.responseType = 'blob';
-                    request.timeout = TIMEOUT;
-                    request.open('GET', url, true);
-                    request.send();
+            //         request.onreadystatechange = done;
+            //         request.ontimeout = timeout;
+            //         request.responseType = 'blob';
+            //         request.timeout = TIMEOUT;
+            //         request.open('GET', url, true);
+            //         request.send();
 
-                    function done() {
-                        if (request.readyState !== 4) return;
+            //         function done() {
+            //             if (request.readyState !== 4) return;
 
-                        if (request.status !== 200) {
-                            fail('cannot fetch resource: ' + url + ', status: ' + request.status);
-                            return;
-                        }
+            //             if (request.status !== 200) {
+            //                 fail('cannot fetch resource: ' + url + ', status: ' + request.status);
+            //                 return;
+            //             }
 
-                        const encoder = new FileReader();
-                        encoder.onloadend = function () {
-                            if (typeof encoder.result == 'string') {
-                                const content = encoder.result.split(/,/)[1];
-                                resolve(content);
-                            }
-                            resolve('');
-                        };
-                        encoder.readAsDataURL(request.response);
-                    }
+            //             const encoder = new FileReader();
+            //             encoder.onloadend = function () {
+            //                 if (typeof encoder.result == 'string') {
+            //                     const content = encoder.result.split(/,/)[1];
+            //                     resolve(content);
+            //                 }
+            //                 resolve('');
+            //             };
+            //             encoder.readAsDataURL(request.response);
+            //         }
 
-                    function timeout() {
-                        fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
-                    }
+            //         function timeout() {
+            //             fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
+            //         }
 
-                    function fail(message: string) {
-                        console.error(message);
-                        resolve('');
-                    }
-                });
-            }
+            //         function fail(message: string) {
+            //             console.error(message);
+            //             resolve('');
+            //         }
+            //     });
+            // }
 
             async function inline(string: string, url: string, baseUrl: string) {
                 return Promise.resolve(url)
                     .then(function (url) {
                         return baseUrl ? resolveUrl(url, baseUrl) : url;
                     })
-                    .then(getAndEncode)
+                    .then(Resource.getAndEncode)
                     .then(function (data) {
                         return dataAsUrl(data, mimeType(url));
                     })
