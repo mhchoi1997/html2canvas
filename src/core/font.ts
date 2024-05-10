@@ -4,7 +4,7 @@ interface IPropertyDescriptor<T> {
 }
 
 export class Resource {
-    static async getAndEncode(url: string) {
+    static async getAndEncode(url: string): Promise<string> {
         const TIMEOUT = 30000;
 
         return new Promise(function (resolve) {
@@ -47,7 +47,7 @@ export class Resource {
         });
     }
 
-    static dataAsUrl(content: unknown, type: string) {
+    static dataAsUrl(content: unknown, type: string): string {
         return 'data:' + type + ';base64,' + content;
     }
 }
