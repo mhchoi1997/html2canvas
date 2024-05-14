@@ -6,21 +6,7 @@
         <title>Document</title>
         <script src="./media/dom-to-image.js" type="text/javascript"></script>
         <script src="../dist/html2canvas.js"></script>
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
         <link rel="stylesheet" href="./common.css" />
-        <link
-            crossorigin="anonymous"
-            href="https://fonts.googleapis.com/css2?family=Anton&family=Dancing+Script:wght@400..700&family=Jaini&display=swap"
-            rel="stylesheet"
-        />
-        <style>
-            * {
-                font-family: 'Anton', sans-serif;
-                font-weight: 600;
-                font-style: normal;
-                font-size: 16px;
-            }
-        </style>
     </head>
     <body>
         <button id="btnHtml">HTML2CAVANS - SVG</button>
@@ -164,8 +150,56 @@
                 </div>
             </div>
             <div>
-                <p>iframe</p>
-                <iframe src="./demo.html" frameborder="0"></iframe>
+                <p>iframe : 제약사항 추가해야할듯...</p>
+                <!-- <iframe src="./demo.html" frameborder="0"></iframe> -->
+            </div>
+            <div>
+                <p>외부 No-Cors</p>
+                <div
+                    style="
+                        display: grid;
+                        grid-template-columns: 300px 400px 400px 300px;
+                        grid-template-rows: 300px;
+                        gap: 20px;
+                    "
+                >
+                    <div>
+                        <img
+                            width="300"
+                            height="300"
+                            src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189"
+                            alt="임시 이미지"
+                            style="height: 100%; width: 100%; border: 2px dotted #888"
+                        />
+                    </div>
+                    <!-- <div>
+                        <video
+                            width="400"
+                            height="300"
+                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
+                            controls
+                            crossorigin="anonymous"
+                        ></video>
+                    </div>
+                    <div>
+                        <video
+                            width="400"
+                            height="300"
+                            src="https://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4"
+                            controls
+                            crossorigin="anonymous"
+                        ></video>
+                    </div>
+                    <div>
+                        <audio
+                            width="300"
+                            height="300"
+                            controls
+                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
+                            crossorigin="anonymous"
+                        ></audio>
+                    </div> -->
+                </div>
             </div>
         </div>
         <script>
@@ -189,24 +223,6 @@
                         anchor.click();
                         anchor.remove();
                         console.timeEnd('timer');
-                    });
-                });
-
-                document.getElementById('btnHtml_canvas').addEventListener('click', () => {
-                    let options = {
-                        scale: 1,
-                        allowTaint: true,
-                        useCORS: true
-                    }; // canvas방식 렌더링
-                    html2canvas(document.body, options).then((imageUrl) => {
-                        document.body.append(imageUrl);
-                        // const anchor = document.createElement('a');
-                        // anchor.display = 'none';
-                        // anchor.href = imageUrl;
-                        // anchor.download = 'html2canvas_canvas';
-                        // document.body.append(anchor);
-                        // anchor.click();
-                        // anchor.remove();
                     });
                 });
                 document.getElementById('btnDom').addEventListener('click', () => {
@@ -236,54 +252,3 @@
         </script>
     </body>
 </html>
-
-<!-- <div>
-                <p>외부 No-Cors</p>
-                <div
-                    style="
-                        display: grid;
-                        grid-template-columns: 300px 400px 400px 300px;
-                        grid-template-rows: 300px;
-                        gap: 20px;
-                    "
-                >
-                    <div>
-                        <img
-                            crossorigin="anonymous"
-                            width="300"
-                            height="300"
-                            src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189"
-                            alt="임시 이미지"
-                            style="object-fit: cover; height: 100%; width: 100%; border: 2px dotted #888"
-                            crossorigin="anonymous"
-                        />
-                    </div>
-                    <div>
-                        <video
-                            width="400"
-                            height="300"
-                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
-                            controls
-                            crossorigin="anonymous"
-                        ></video>
-                    </div>
-                    <div>
-                        <video
-                            width="400"
-                            height="300"
-                            src="https://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4"
-                            controls
-                            crossorigin="anonymous"
-                        ></video>
-                    </div>
-                    <div>
-                        <audio
-                            width="300"
-                            height="300"
-                            controls
-                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
-                            crossorigin="anonymous"
-                        ></audio>
-                    </div>
-                </div>
-            </div> -->

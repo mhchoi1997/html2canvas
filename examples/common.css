@@ -1,3 +1,35 @@
+/* vietnamese */
+@font-face {
+    font-family: 'Danfo';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/danfo/v2/snf3s0u_98t16THfK1Csj3N41ZqbYDeJQ7dSkPo.woff2) format('woff2');
+}
+/* latin-ext */
+@font-face {
+    font-family: 'Danfo';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/danfo/v2/snf3s0u_98t16THfK1Csj3N41ZqbYDeJQrdSkPo.woff2) format('woff2');
+}
+/* latin */
+@font-face {
+    font-family: 'Danfo';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/danfo/v2/snf3s0u_98t16THfK1Csj3N41ZqbYDeJTLdS.woff2) format('woff2');
+}
+
+* {
+    font-family: 'Danfo', serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: 'ELSH' 0;
+}
 body {
     margin: 10px;
     border: 2px solid red;

@@ -1,58 +1,4 @@
-interface IPropertyDescriptor<T> {
-    resolve: () => Promise<T>;
-    src: () => T;
-}
-
-export class Resource {
-    static async getAndEncode(url: string): Promise<string> {
-        const TIMEOUT = 30000;
-
-        return new Promise(function (resolve) {
-            const request = new XMLHttpRequest();
-
-            request.onreadystatechange = done;
-            request.ontimeout = timeout;
-            request.responseType = 'blob';
-            request.timeout = TIMEOUT;
-            request.open('GET', url, true);
-            request.send();
-
-            function done() {
-                if (request.readyState !== 4) return;
-
-                if (request.status !== 200) {
-                    fail('cannot fetch resource: ' + url + ', status: ' + request.status);
-                    return;
-                }
-
-                const encoder = new FileReader();
-                encoder.onloadend = function () {
-                    if (typeof encoder.result == 'string') {
-                        const content = encoder.result.split(/,/)[1];
-                        resolve(content);
-                    }
-                    resolve('');
-                };
-                encoder.readAsDataURL(request.response);
-            }
-
-            function timeout() {
-                fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
-            }
-
-            function fail(message: string) {
-                console.error(message);
-                resolve('');
-            }
-        });
-    }
-
-    static dataAsUrl(content: unknown, type: string): string {
-        return 'data:' + type + ';base64,' + content;
-    }
-}
-
-class Font {
+class Image {
     async resolveAll() {
         return this._readAll()
             .then(function (webFonts) {
@@ -68,7 +14,7 @@ class Font {
     }
 
     private _readAll() {
-        return Promise.resolve(Font.asArray(document.styleSheets))
+        return Promise.resolve(Image.asArray(document.images))
             .then(getCssRules)
             .then(selectWebFontRules)
             .then(function (rules) {
@@ -223,5 +169,4 @@ class Font {
     }
 }
 
-// 폰트 관련 추가
-export const fontFaces = new Font();
+export const imagesFace = new Image();

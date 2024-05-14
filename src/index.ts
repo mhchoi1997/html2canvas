@@ -38,6 +38,12 @@ const loadFontStyle = async (): Promise<string> => {
     });
 };
 
+const loadImage = async (): Promise<any> => {
+    return new Promise((resolve) => {
+        imageFace.resolveAll().then(function )
+    })
+}
+
 const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<string> => {
     if (!element || typeof element !== 'object') {
         return Promise.reject('Invalid element provided as first argument');
@@ -101,6 +107,9 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
     // Font가져오기.
     const fontStyle = await loadFontStyle();
+
+    // image처리를 위한 로직 추가
+    const images = await loadImage();
 
     if (fontStyle != null) {
         cloneOptions.fontStyle = fontStyle;
