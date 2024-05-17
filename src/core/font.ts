@@ -1,3 +1,5 @@
+import Utils from './utils';
+
 interface IPropertyDescriptor<T> {
     resolve: () => Promise<T>;
     src: () => T;
@@ -68,7 +70,7 @@ class Font {
     }
 
     private _readAll() {
-        return Promise.resolve(Font.asArray(document.styleSheets))
+        return Promise.resolve(Utils.asArray(document.styleSheets))
             .then(getCssRules)
             .then(selectWebFontRules)
             .then(function (rules) {
@@ -193,7 +195,7 @@ class Font {
             const cssRules: Array<CSSRule> = [];
             styleSheets.forEach(function (sheet: CSSStyleSheet) {
                 try {
-                    Font.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
+                    Utils.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
                 } catch (e) {
                     console.warn(`Error while reading CSS rules from ${sheet.href}, ${e.toString()}`);
                 }
@@ -212,14 +214,6 @@ class Font {
                 }
             };
         }
-    }
-
-    // 유사 배열 객체를 받아서 배열로 변환시켜준다.
-    static asArray(arrayLike: ArrayLike<unknown>) {
-        const array = [];
-        const length = arrayLike.length;
-        for (let i = 0; i < length; i++) array.push(arrayLike[i]);
-        return array;
     }
 }
 

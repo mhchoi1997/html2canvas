@@ -6,7 +6,6 @@ import {CacheStorage} from './core/cache-storage';
 import {CanvasRenderer, RenderConfigurations, RenderOptions} from './render/canvas/canvas-renderer';
 import {ForeignObjectRenderer} from './render/canvas/foreignobject-renderer';
 import {Context, ContextOptions} from './core/context';
-import './core/font';
 import {fontFaces} from './core/font';
 
 export type Options = CloneOptions &
@@ -38,11 +37,11 @@ const loadFontStyle = async (): Promise<string> => {
     });
 };
 
-const loadImage = async (): Promise<any> => {
-    return new Promise((resolve) => {
-        imageFace.resolveAll().then(function )
-    })
-}
+// const loadImage = async (): Promise<any> => {
+//     return new Promise((resolve) => {
+//         imageFace.resolveAll().then(function )
+//     })
+// }
 
 const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<string> => {
     if (!element || typeof element !== 'object') {
@@ -109,7 +108,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
     const fontStyle = await loadFontStyle();
 
     // image처리를 위한 로직 추가
-    const images = await loadImage();
+    // const images = await loadImage();
 
     if (fontStyle != null) {
         cloneOptions.fontStyle = fontStyle;
