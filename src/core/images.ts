@@ -1,174 +1,334 @@
-// import {IPropertyDescriptor} from '../css/IPropertyDescriptor';
+export const images = () => {
+    return {
+        inlineAll: inlineAll,
+        impl: {
+            newImage: newImage
+        }
+    };
 
-// class Image {
-//     async resolveAll() {
-//         return this._readAll()
-//             .then(function (webFonts) {
-//                 return Promise.all(
-//                     webFonts.map(function (webFont: IPropertyDescriptor<string>) {
-//                         return webFont.resolve();
-//                     })
-//                 );
-//             })
-//             .then(function (cssStrings) {
-//                 return cssStrings.join('\n');
-//             });
-//     }
+    function newImage(element: any) {
+        return {
+            inline: inline
+        };
 
-//     private _readAll() {
-//         return Promise.resolve(Image.asArray(document.images))
-//             .then(getCssRules)
-//             .then(selectWebFontRules)
-//             .then(function (rules) {
-//                 return rules.map(newWebFont);
-//             });
+        function inline(get?: any) {
+            if (util.isDataUrl(element.src)) return Promise.resolve();
 
-//         function shouldProcess(string: string) {
-//             const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
-//             return string.search(URL_REGEX) !== -1;
-//         }
+            return Promise.resolve(element.src)
+                .then(get || util.getAndEncode)
+                .then(function (data) {
+                    return util.dataAsUrl(data, util.mimeType(element.src));
+                })
+                .then(function (dataUrl) {
+                    return new Promise(function (resolve, reject) {
+                        element.onload = resolve;
+                        element.onerror = reject;
+                        element.src = dataUrl;
+                    });
+                });
+        }
+    }
 
-//         function isDataUrl(url: string) {
-//             return url.search(/^(data:)/) !== -1;
-//         }
+    function inlineAll(node: Element | HTMLImageElement): any {
+        if (!(node instanceof Element)) return Promise.resolve(node);
 
-//         async function inlineAll(string: string, baseUrl: string) {
-//             if (nothingToInline()) return Promise.resolve(string);
+        return inlineBackground(node).then(function () {
+            if (node instanceof HTMLImageElement) return newImage(node).inline();
+            else
+                return Promise.all(
+                    util.asArray(node.childNodes).map(function (child: any) {
+                        return inlineAll(child);
+                    })
+                );
+        });
 
-//             function readUrls(string: string) {
-//                 const result = [];
-//                 const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
-//                 let match;
-//                 while ((match = URL_REGEX.exec(string)) !== null) {
-//                     result.push(match[1]);
-//                 }
-//                 return result.filter(function (url) {
-//                     return !isDataUrl(url);
-//                 });
-//             }
+        function inlineBackground(node: any) {
+            const background = node.style.getPropertyValue('background');
 
-//             function resolveUrl(url: string, baseUrl: string) {
-//                 const doc = document.implementation.createHTMLDocument();
-//                 const base = doc.createElement('base');
-//                 doc.head.appendChild(base);
-//                 const a = doc.createElement('a');
-//                 doc.body.appendChild(a);
-//                 base.href = baseUrl;
-//                 a.href = url;
-//                 return a.href;
-//             }
+            if (!background) return Promise.resolve(node);
 
-//             function dataAsUrl(content: unknown, type: string) {
-//                 return 'data:' + type + ';base64,' + content;
-//             }
+            return inliner
+                .inlineAll(background)
+                .then(function (inlined) {
+                    node.style.setProperty('background', inlined, node.style.getPropertyPriority('background'));
+                })
+                .then(function () {
+                    return node;
+                });
+        }
+    }
+};
 
-//             function mimes() {
-//                 const WOFF = 'application/font-woff';
-//                 const JPEG = 'image/jpeg';
+function Util() {
+    return {
+        escape: escape,
+        parseExtension: parseExtension,
+        mimeType: mimeType,
+        dataAsUrl: dataAsUrl,
+        isDataUrl: isDataUrl,
+        canvasToBlob: canvasToBlob,
+        resolveUrl: resolveUrl,
+        getAndEncode: getAndEncode,
+        uid: uid(),
+        delay: delay,
+        asArray: asArray,
+        escapeXhtml: escapeXhtml,
+        makeImage: makeImage,
+        width: width,
+        height: height
+    };
 
-//                 return {
-//                     woff: WOFF,
-//                     woff2: WOFF,
-//                     ttf: 'application/font-truetype',
-//                     eot: 'application/vnd.ms-fontobject',
-//                     png: 'image/png',
-//                     jpg: JPEG,
-//                     jpeg: JPEG,
-//                     gif: 'image/gif',
-//                     tiff: 'image/tiff',
-//                     svg: 'image/svg+xml'
-//                 };
-//             }
+    function mimes() {
+        /*
+         * Only WOFF and EOT mime types for fonts are 'real'
+         * see http://www.iana.org/assignments/media-types/media-types.xhtml
+         */
+        const WOFF = 'application/font-woff';
+        const JPEG = 'image/jpeg';
 
-//             function parseExtension(url: string) {
-//                 const match = /\.([^\.\/]*?)$/g.exec(url);
-//                 if (match) return match[1];
-//                 else return '';
-//             }
+        return {
+            woff: WOFF,
+            woff2: WOFF,
+            ttf: 'application/font-truetype',
+            eot: 'application/vnd.ms-fontobject',
+            png: 'image/png',
+            jpg: JPEG,
+            jpeg: JPEG,
+            gif: 'image/gif',
+            tiff: 'image/tiff',
+            svg: 'image/svg+xml'
+        };
+    }
 
-//             function mimeType(url: string) {
-//                 const resourceMimes = mimes();
-//                 const extension = parseExtension(url).toLowerCase() as keyof typeof resourceMimes;
-//                 return mimes()[extension];
-//             }
+    function parseExtension(url: string) {
+        const match = /\.([^\.\/]*?)$/g.exec(url);
+        if (match) return match[1];
+        else return '';
+    }
 
-//             async function inline(string: string, url: string, baseUrl: string) {
-//                 return Promise.resolve(url)
-//                     .then(function (url) {
-//                         return baseUrl ? resolveUrl(url, baseUrl) : url;
-//                     })
-//                     .then(Resource.getAndEncode)
-//                     .then(function (data) {
-//                         return dataAsUrl(data, mimeType(url));
-//                     })
-//                     .then(function (dataUrl) {
-//                         return string.replace(urlAsRegex(url), '$1' + dataUrl + '$3');
-//                     });
+    function mimeType(url: string) {
+        const resourceMimes = mimes();
+        const extension = parseExtension(url).toLowerCase() as keyof typeof resourceMimes;
+        return mimes()[extension] || '';
+    }
 
-//                 function urlAsRegex(url: string) {
-//                     return new RegExp('(url\\([\'"]?)(' + url + ')([\'"]?\\))', 'g');
-//                 }
-//             }
+    function isDataUrl(url: string) {
+        return url.search(/^(data:)/) !== -1;
+    }
 
-//             return Promise.resolve(string)
-//                 .then(readUrls)
-//                 .then(function (urls) {
-//                     let done = Promise.resolve(string);
-//                     urls.forEach(function (url) {
-//                         done = done.then(function (string) {
-//                             return inline(string, url, baseUrl);
-//                         });
-//                     });
-//                     return done;
-//                 });
+    function toBlob(canvas: HTMLCanvasElement) {
+        return new Promise(function (resolve) {
+            const binaryString = window.atob(canvas.toDataURL().split(',')[1]);
+            const length = binaryString.length;
+            const binaryArray = new Uint8Array(length);
 
-//             function nothingToInline() {
-//                 return !shouldProcess(string);
-//             }
-//         }
+            for (let i = 0; i < length; i++) binaryArray[i] = binaryString.charCodeAt(i);
 
-//         function selectWebFontRules(cssRules: Array<CSSRule>) {
-//             return cssRules
-//                 .filter(function (rule: CSSRule) {
-//                     return rule.type === CSSRule.FONT_FACE_RULE;
-//                 })
-//                 .filter(function (rule: CSSFontFaceRule) {
-//                     return shouldProcess(rule.style.getPropertyValue('src'));
-//                 });
-//         }
+            resolve(
+                new Blob([binaryArray], {
+                    type: 'image/png'
+                })
+            );
+        });
+    }
 
-//         function getCssRules(styleSheets: Array<CSSStyleSheet>): Array<CSSRule> {
-//             const cssRules: Array<CSSRule> = [];
-//             styleSheets.forEach(function (sheet: CSSStyleSheet) {
-//                 try {
-//                     Font.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
-//                 } catch (e) {
-//                     console.warn(`Error while reading CSS rules from ${sheet.href}, ${e.toString()}`);
-//                 }
-//             });
-//             return cssRules;
-//         }
+    function canvasToBlob(canvas: HTMLCanvasElement) {
+        if (canvas.toBlob)
+            return new Promise(function (resolve) {
+                canvas.toBlob(resolve);
+            });
 
-//         function newWebFont(webFontRule: CSSFontFaceRule): IPropertyDescriptor<string> {
-//             return {
-//                 resolve: function () {
-//                     const baseUrl = (webFontRule.parentStyleSheet || {}).href ?? '';
-//                     return inlineAll(webFontRule.cssText, baseUrl);
-//                 },
-//                 src: function () {
-//                     return webFontRule.style.getPropertyValue('src');
-//                 }
-//             };
-//         }
-//     }
+        return toBlob(canvas);
+    }
 
-//     // 유사 배열 객체를 받아서 배열로 변환시켜준다.
-//     static asArray(arrayLike: ArrayLike<unknown>) {
-//         const array = [];
-//         const length = arrayLike.length;
-//         for (let i = 0; i < length; i++) array.push(arrayLike[i]);
-//         return array;
-//     }
-// }
+    function resolveUrl(url: string, baseUrl: string) {
+        const doc = document.implementation.createHTMLDocument();
+        const base = doc.createElement('base');
+        doc.head.appendChild(base);
+        const a = doc.createElement('a');
+        doc.body.appendChild(a);
+        base.href = baseUrl;
+        a.href = url;
+        return a.href;
+    }
 
-// export const imagesFace = new Image();
+    function uid() {
+        let index = 0;
+
+        return function () {
+            return 'u' + fourRandomChars() + index++;
+
+            function fourRandomChars() {
+                return ('0000' + ((Math.random() * Math.pow(36, 4)) << 0).toString(36)).slice(-4);
+            }
+        };
+    }
+
+    function makeImage(uri: string) {
+        return new Promise(function (resolve, reject) {
+            const image = new Image();
+            image.onload = function () {
+                resolve(image);
+            };
+            image.onerror = reject;
+            image.src = uri;
+        });
+    }
+
+    function getAndEncode(url: string) {
+        const TIMEOUT = 30000;
+
+        return new Promise(function (resolve) {
+            const request = new XMLHttpRequest();
+
+            request.onreadystatechange = done;
+            request.ontimeout = timeout;
+            request.responseType = 'blob';
+            request.timeout = TIMEOUT;
+            request.open('GET', url, true);
+            request.send();
+
+            function done() {
+                if (request.readyState !== 4) return;
+
+                if (request.status !== 200) {
+                    fail('cannot fetch resource: ' + url + ', status: ' + request.status);
+                    return;
+                }
+
+                const encoder = new FileReader();
+                encoder.onloadend = function () {
+                    if (typeof encoder.result == 'string') {
+                        const content = encoder.result.split(/,/)[1];
+                        resolve(content);
+                    }
+                };
+                encoder.readAsDataURL(request.response);
+            }
+
+            function timeout() {
+                fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
+            }
+
+            function fail(message: string) {
+                console.error(message);
+                resolve('');
+            }
+        });
+    }
+
+    function dataAsUrl(content: string, type: string) {
+        return 'data:' + type + ';base64,' + content;
+    }
+
+    function escape(string: string) {
+        return string.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
+    }
+
+    function delay(ms: number) {
+        return function (arg: any) {
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    resolve(arg);
+                }, ms);
+            });
+        };
+    }
+
+    function asArray<T>(arrayLike: ArrayLike<T>) {
+        const array = [];
+        const length = arrayLike.length;
+        for (let i = 0; i < length; i++) array.push(arrayLike[i]);
+        return array;
+    }
+
+    function escapeXhtml(string: string) {
+        return string.replace(/#/g, '%23').replace(/\n/g, '%0A');
+    }
+
+    function width(node: any) {
+        const leftBorder = px(node, 'border-left-width');
+        const rightBorder = px(node, 'border-right-width');
+        return node.scrollWidth + leftBorder + rightBorder;
+    }
+
+    function height(node: any) {
+        const topBorder = px(node, 'border-top-width');
+        const bottomBorder = px(node, 'border-bottom-width');
+        return node.scrollHeight + topBorder + bottomBorder;
+    }
+
+    function px(node: any, styleProperty: string) {
+        const value = window.getComputedStyle(node).getPropertyValue(styleProperty);
+        return parseFloat(value.replace('px', ''));
+    }
+}
+
+function newInliner() {
+    const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
+
+    return {
+        inlineAll: inlineAll,
+        shouldProcess: shouldProcess,
+        impl: {
+            readUrls: readUrls,
+            inline: inline
+        }
+    };
+
+    function shouldProcess(string: string) {
+        return string.search(URL_REGEX) !== -1;
+    }
+
+    function readUrls(string: string) {
+        const result = [];
+        let match;
+        while ((match = URL_REGEX.exec(string)) !== null) {
+            result.push(match[1]);
+        }
+        return result.filter(function (url) {
+            return !util.isDataUrl(url);
+        });
+    }
+
+    function inline(string: string, url: string, baseUrl?: string, get?: any) {
+        return Promise.resolve(url)
+            .then(function (url) {
+                return baseUrl ? util.resolveUrl(url, baseUrl) : url;
+            })
+            .then(get || util.getAndEncode)
+            .then(function (data) {
+                return util.dataAsUrl(data, util.mimeType(url));
+            })
+            .then(function (dataUrl) {
+                return string.replace(urlAsRegex(url), '$1' + dataUrl + '$3');
+            });
+
+        function urlAsRegex(url: string) {
+            return new RegExp('(url\\([\'"]?)(' + util.escape(url) + ')([\'"]?\\))', 'g');
+        }
+    }
+
+    function inlineAll(string: string, baseUrl?: string, get?: any) {
+        if (nothingToInline()) return Promise.resolve(string);
+
+        return Promise.resolve(string)
+            .then(readUrls)
+            .then(function (urls) {
+                let done = Promise.resolve(string);
+                urls.forEach(function (url) {
+                    done = done.then(function (string) {
+                        return inline(string, url, baseUrl, get);
+                    });
+                });
+                return done;
+            });
+
+        function nothingToInline() {
+            return !shouldProcess(string);
+        }
+    }
+}
+
+const inliner = newInliner();
+const util = Util();

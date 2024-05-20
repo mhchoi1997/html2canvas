@@ -90,7 +90,8 @@ span {
 }
 
 .test3 {
-    background-image: url('https://tistory1.daumcdn.net/tistory/783187/skin/images/bg1-min.jpg');
+    /* background-image: url('https://tistory1.daumcdn.net/tistory/783187/skin/images/bg1-min.jpg'); */
+    background-image: url('./media/lake.jpg');
     /* background-color: #4390e1; */
     background-position: center;
     background-repeat: no-repeat;
