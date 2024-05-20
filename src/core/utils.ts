@@ -161,7 +161,7 @@ export default class Utils {
     }
 
     static delay(ms: number): DelayFuncType {
-        return function (arg: any) {
+        return function (arg: unknown) {
             return new Promise(function (resolve) {
                 setTimeout(function () {
                     resolve(arg);
