@@ -169,7 +169,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
         const renderer = new CanvasRenderer(context, renderOptions);
         const canvas = await renderer.render(root);
-        imageUrl = canvas.toDataURL();
+        imageUrl = canvas.toDataURL('image/jpeg', 0.5);
     }
 
     if (opts.removeContainer ?? true) {
