@@ -216,6 +216,7 @@ export class DocumentCloner {
 
     createImageClone(node: HTMLImageElement): HTMLImageElement {
         // image -> canvas;
+        node.crossOrigin = 'anonymous';
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 

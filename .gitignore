@@ -18,3 +18,5 @@ tests/reftests.js
 *.log
 .rpt2_cache
 /examples/fonts
+examples
+www.kbstar.com
