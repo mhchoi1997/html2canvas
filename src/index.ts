@@ -63,6 +63,13 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         throw new Error(`Document is not attached to a Window`);
     }
 
+    // body의 offsetHeight보다 document.body.scrollHeight가 더 클 경우
+    let isBodyResize = false;
+    if (document.body.scrollHeight > document.body.offsetHeight) {
+        document.body.style.height = `${document.body.scrollHeight}px`;
+        isBodyResize = true;
+    }
+
     const resourceOptions = {
         allowTaint: opts.allowTaint ?? false,
         imageTimeout: opts.imageTimeout ?? 15000,
@@ -177,6 +184,12 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
     }
 
     context.logger.debug(`Finished rendering`);
+
+    if (isBodyResize) {
+        isBodyResize = false;
+        // document.body에 적용한 height 초기화
+        document.body.style.height = '';
+    }
     return imageUrl;
 };
 
