@@ -31,11 +31,11 @@ export default class Utils {
         return {
             woff: WOFF,
             woff2: WOFF,
+            jpg: JPEG,
+            jpeg: JPEG,
             ttf: 'application/font-truetype',
             eot: 'application/vnd.ms-fontobject',
             png: 'image/png',
-            jpg: JPEG,
-            jpeg: JPEG,
             gif: 'image/gif',
             tiff: 'image/tiff',
             svg: 'image/svg+xml'
@@ -44,15 +44,14 @@ export default class Utils {
 
     static parseExtension(url: string): string {
         // 확장자 정규 표현식을 사용하여 체크
-        const match = /\.([^\.\/]*?)$/g.exec(url);
-        if (match) return match[1];
-        else return '';
+        const extensionMatch = /\.(^[\.\/]*?)$/g.exec(url);
+        return extensionMatch ? extensionMatch[1] : '';
     }
 
     static mimeType(url: string): string {
-        const resourceMimes = this.mimes();
-        const extension = this.parseExtension(url).toLowerCase() as keyof typeof resourceMimes;
-        return resourceMimes[extension] || '';
+        const resourceMimes = this.mimes(); // MIME객체를 가져오고...
+        const extension = this.parseExtension(url).toLowerCase() as keyof typeof resourceMimes; // url의 확장자를 가지고 소문자로 변환
+        return resourceMimes[extension] ?? ''; // MIME객체에 해당하는 확장자가 있는지 검사 후 있으면 값을 가져오고, 아니면 공백문자로 처리한다.
     }
 
     static isDataUrl(url: string): boolean {
@@ -60,6 +59,11 @@ export default class Utils {
         return url.search(/^(data:)/) !== -1;
     }
 
+    /**
+     * Canvas를 Blob객체로 변환
+     * @param canvas
+     * @returns
+     */
     static toBlob(canvas: HTMLCanvasElement): Promise<unknown> {
         return new Promise(function (resolve) {
             const binaryString = window.atob(canvas.toDataURL().split(',')[1]);
