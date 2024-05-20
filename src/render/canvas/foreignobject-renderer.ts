@@ -2,7 +2,7 @@ import {RenderConfigurations} from './canvas-renderer';
 import {createForeignObjectSVG} from '../../core/features';
 import {Renderer} from '../renderer';
 import {Context} from '../../core/context';
-import {Resource} from '../../core/font';
+import Utils from '../../core/utils';
 import {asString} from '../../css/types/color';
 
 export class ForeignObjectRenderer extends Renderer {
@@ -44,9 +44,9 @@ export class ForeignObjectRenderer extends Renderer {
             });
             const imgUrl = URL.createObjectURL(svgBlob);
 
-            Resource.getAndEncode(imgUrl)
+            Utils.getAndEncode(imgUrl)
                 .then((content: string) => {
-                    return Resource.dataAsUrl(content, 'image/svg+xml');
+                    return Utils.dataAsUrl(content, 'image/svg+xml');
                 })
                 .then((dataUrl: string) => {
                     const image = new Image();

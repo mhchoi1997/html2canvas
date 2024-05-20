@@ -5,55 +5,6 @@ interface IPropertyDescriptor<T> {
     src: () => T;
 }
 
-export class Resource {
-    static async getAndEncode(url: string): Promise<string> {
-        const TIMEOUT = 30000;
-
-        return new Promise(function (resolve) {
-            const request = new XMLHttpRequest();
-
-            request.onreadystatechange = done;
-            request.ontimeout = timeout;
-            request.responseType = 'blob';
-            request.timeout = TIMEOUT;
-            request.open('GET', url, true);
-            request.send();
-
-            function done() {
-                if (request.readyState !== 4) return;
-
-                if (request.status !== 200) {
-                    fail('cannot fetch resource: ' + url + ', status: ' + request.status);
-                    return;
-                }
-
-                const encoder = new FileReader();
-                encoder.onloadend = function () {
-                    if (typeof encoder.result == 'string') {
-                        const content = encoder.result.split(/,/)[1];
-                        resolve(content);
-                    }
-                    resolve('');
-                };
-                encoder.readAsDataURL(request.response);
-            }
-
-            function timeout() {
-                fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
-            }
-
-            function fail(message: string) {
-                console.error(message);
-                resolve('');
-            }
-        });
-    }
-
-    static dataAsUrl(content: unknown, type: string): string {
-        return 'data:' + type + ';base64,' + content;
-    }
-}
-
 class Font {
     async resolveAll() {
         return this._readAll()
@@ -70,7 +21,9 @@ class Font {
     }
 
     private _readAll() {
-        return Promise.resolve(Utils.asArray(document.styleSheets))
+        const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
+
+        return Promise.resolve(utils.asArray(document.styleSheets))
             .then(getCssRules)
             .then(selectWebFontRules)
             .then(function (rules) {
@@ -78,12 +31,7 @@ class Font {
             });
 
         function shouldProcess(string: string) {
-            const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
             return string.search(URL_REGEX) !== -1;
-        }
-
-        function isDataUrl(url: string) {
-            return url.search(/^(data:)/) !== -1;
         }
 
         async function inlineAll(string: string, baseUrl: string) {
@@ -91,69 +39,23 @@ class Font {
 
             function readUrls(string: string) {
                 const result = [];
-                const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
                 let match;
                 while ((match = URL_REGEX.exec(string)) !== null) {
                     result.push(match[1]);
                 }
                 return result.filter(function (url) {
-                    return !isDataUrl(url);
+                    return !utils.isDataUrl(url);
                 });
-            }
-
-            function resolveUrl(url: string, baseUrl: string) {
-                const doc = document.implementation.createHTMLDocument();
-                const base = doc.createElement('base');
-                doc.head.appendChild(base);
-                const a = doc.createElement('a');
-                doc.body.appendChild(a);
-                base.href = baseUrl;
-                a.href = url;
-                return a.href;
-            }
-
-            function dataAsUrl(content: unknown, type: string) {
-                return 'data:' + type + ';base64,' + content;
-            }
-
-            function mimes() {
-                const WOFF = 'application/font-woff';
-                const JPEG = 'image/jpeg';
-
-                return {
-                    woff: WOFF,
-                    woff2: WOFF,
-                    ttf: 'application/font-truetype',
-                    eot: 'application/vnd.ms-fontobject',
-                    png: 'image/png',
-                    jpg: JPEG,
-                    jpeg: JPEG,
-                    gif: 'image/gif',
-                    tiff: 'image/tiff',
-                    svg: 'image/svg+xml'
-                };
-            }
-
-            function parseExtension(url: string) {
-                const match = /\.([^\.\/]*?)$/g.exec(url);
-                if (match) return match[1];
-                else return '';
-            }
-
-            function mimeType(url: string) {
-                const resourceMimes = mimes();
-                const extension = parseExtension(url).toLowerCase() as keyof typeof resourceMimes;
-                return mimes()[extension];
             }
 
             async function inline(string: string, url: string, baseUrl: string) {
                 return Promise.resolve(url)
                     .then(function (url) {
-                        return baseUrl ? resolveUrl(url, baseUrl) : url;
+                        return baseUrl ? utils.resolveUrl(url, baseUrl) : url;
                     })
-                    .then(Resource.getAndEncode)
-                    .then(function (data) {
-                        return dataAsUrl(data, mimeType(url));
+                    .then(utils.getAndEncode)
+                    .then(function (data: string) {
+                        return utils.dataAsUrl(data, utils.mimeType(url));
                     })
                     .then(function (dataUrl) {
                         return string.replace(urlAsRegex(url), '$1' + dataUrl + '$3');
@@ -195,7 +97,7 @@ class Font {
             const cssRules: Array<CSSRule> = [];
             styleSheets.forEach(function (sheet: CSSStyleSheet) {
                 try {
-                    Utils.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
+                    utils.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
                 } catch (e) {
                     console.warn(`Error while reading CSS rules from ${sheet.href}, ${e.toString()}`);
                 }
@@ -219,3 +121,4 @@ class Font {
 
 // 폰트 관련 추가
 export const fontFaces = new Font();
+const utils = Utils;
