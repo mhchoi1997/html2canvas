@@ -123,9 +123,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
     }
 
     // image처리를 위한 로직 추가
-    const images = await loadImages(clonedElement);
-    // eslint-disable-next-line no-console
-    console.log(images);
+    await loadImages(clonedElement);
 
     const container = await documentCloner.toIFrame(ownerDocument, windowBounds);
 
@@ -169,7 +167,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
         const renderer = new CanvasRenderer(context, renderOptions);
         const canvas = await renderer.render(root);
-        imageUrl = canvas.toDataURL('image/jpeg', 0.5);
+        imageUrl = canvas.toDataURL('image/jpeg');
     }
 
     if (opts.removeContainer ?? true) {

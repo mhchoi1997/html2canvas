@@ -70,7 +70,7 @@ export class ForeignObjectRenderer extends Renderer {
 
                         ctx?.drawImage(image, 0, 0);
 
-                        const url = canvas.toDataURL('image/jpeg', 0.5);
+                        const url = canvas.toDataURL('image/jpeg');
                         resolve(url);
                     };
                 });
