@@ -216,7 +216,7 @@ export class DocumentCloner {
 
     createImageClone(node: HTMLImageElement): HTMLImageElement {
         // image -> canvas;
-        node.crossOrigin = 'anonymous';
+        // node.crossOrigin = 'anonymous';
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -282,7 +282,7 @@ export class DocumentCloner {
         canvas.height = video.offsetHeight;
         const ctx = canvas.getContext('2d');
         const image = new Image();
-        image.setAttribute('crossorigin', 'anonymous');
+        // image.setAttribute('crossorigin', 'anonymous');
 
         try {
             if (ctx) {

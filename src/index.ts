@@ -63,13 +63,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         throw new Error(`Document is not attached to a Window`);
     }
 
-    // body의 offsetHeight보다 document.body.scrollHeight가 더 클 경우
-    let isBodyResize = false;
-    if (document.body.scrollHeight > document.body.offsetHeight) {
-        document.body.style.height = `${document.body.scrollHeight}px`;
-        isBodyResize = true;
-    }
-
     const resourceOptions = {
         allowTaint: opts.allowTaint ?? false,
         imageTimeout: opts.imageTimeout ?? 15000,
@@ -138,6 +131,17 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         isBodyElement(clonedElement) || isHTMLElement(clonedElement)
             ? parseDocumentSize(clonedElement.ownerDocument)
             : parseBounds(context, clonedElement);
+
+    console.warn(` [html2canvas ::: height] ----------- ${height}`);
+
+    // body의 offsetHeight보다 document.body.scrollHeight가 더 클 경우
+    let isBodyResize = false;
+    const elementHeight = element.getBoundingClientRect().height;
+
+    if (elementHeight < height) {
+        document.body.style.height = `${height}px`;
+        isBodyResize = true;
+    }
 
     const backgroundColor = parseBackgroundColor(context, clonedElement, opts.backgroundColor);
 

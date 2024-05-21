@@ -97,7 +97,17 @@ class Font {
             const cssRules: Array<CSSRule> = [];
             styleSheets.forEach(function (sheet: CSSStyleSheet) {
                 try {
-                    utils.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
+                    utils.asArray(sheet.cssRules || []).forEach((rules) => {
+                        if (rules.type === CSSRule.IMPORT_RULE) {
+                            const importRules = rules as CSSImportRule;
+                            const importStyleSheet = importRules.styleSheet;
+                            if (importStyleSheet) {
+                                Array.prototype.push.apply(cssRules, getCssRules([importStyleSheet] ?? []));
+                            }
+                        } else {
+                            cssRules.push(rules);
+                        }
+                    });
                 } catch (e) {
                     console.warn(`Error while reading CSS rules from ${sheet.href}, ${e.toString()}`);
                 }
