@@ -1,4 +1,4 @@
-/dist
+/distcontainer_intro.js
 /tmp
 /build
 /nbproject/
@@ -17,10 +17,5 @@ debug.log
 tests/reftests.js
 *.log
 .rpt2_cache
-/examples/fonts
 examples
-www.kbstar.com
-2018
-2017
-index.html
-container_intro.js
+dist
