@@ -107,7 +107,7 @@ export class Cache {
         });
     }
 
-    private has(key: string): boolean {
+    has(key: string): boolean {
         return typeof this._cache[key] !== 'undefined';
     }
 

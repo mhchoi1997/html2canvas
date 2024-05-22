@@ -168,7 +168,7 @@ export class DocumentCloner {
             const urlRegExp = /url\(["']?(.*?)["']?\)/;
             const imagePath = window.getComputedStyle(node).backgroundImage;
             const url = imagePath.match(urlRegExp)?.[1];
-            url && this.context.cache.match(url).then(dataUrl => clone.style.backgroundImage = `url(${dataUrl.src})`);
+            url &&  this.context.cache.has(url) && this.context.cache.match(url).then(dataUrl => clone.style.backgroundImage = `url(${dataUrl.src})`);
             
         }
 
