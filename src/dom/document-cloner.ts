@@ -163,14 +163,13 @@ export class DocumentCloner {
 
         const clone = node.cloneNode(false) as T;
 
-        if (window.getComputedStyle(node).backgroundImage) {
+        if (this.options.inlineImages && window.getComputedStyle(node).backgroundImage) {
             // 만약 css background-image가 있다면?
             const urlRegExp = /url\(["']?(.*?)["']?\)/;
             const imagePath = window.getComputedStyle(node).backgroundImage;
             const url = imagePath.match(urlRegExp)?.[1];
-            if (url) {
-                this.context.cache.match(url).then(dataUrl => clone.style.backgroundImage = `url(${dataUrl.src})`);
-            }
+            url && this.context.cache.match(url).then(dataUrl => clone.style.backgroundImage = `url(${dataUrl.src})`);
+            
         }
 
         if (isImageElement(clone)) {
@@ -183,7 +182,9 @@ export class DocumentCloner {
                 clone.loading = 'eager';
             }
 
-            this.context.cache.match(clone.src).then(dataUrl => clone.src = dataUrl.src);
+            if (this.options.inlineImages) {
+                this.context.cache.match(clone.src).then(dataUrl => clone.src = dataUrl.src);
+            }
         }
 
         if (isCustomElement(clone)) {
