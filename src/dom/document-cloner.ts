@@ -160,11 +160,19 @@ export class DocumentCloner {
         if (isStyleElement(node)) {
             return this.createStyleClone(node);
         }
-        if (isImageElement(node)) {
-            return this.createImageClone(node);
-        }
 
         const clone = node.cloneNode(false) as T;
+
+        if (window.getComputedStyle(node).backgroundImage) {
+            // 만약 css background-image가 있다면?
+            const urlRegExp = /url\(["']?(.*?)["']?\)/;
+            const imagePath = window.getComputedStyle(node).backgroundImage;
+            const url = imagePath.match(urlRegExp)?.[1];
+            if (url) {
+                this.context.cache.match(url).then(dataUrl => clone.style.backgroundImage = `url(${dataUrl.src})`);
+            }
+        }
+
         if (isImageElement(clone)) {
             if (isImageElement(node) && node.currentSrc && node.currentSrc !== node.src) {
                 clone.src = node.currentSrc;
@@ -174,6 +182,8 @@ export class DocumentCloner {
             if (clone.loading === 'lazy') {
                 clone.loading = 'eager';
             }
+
+            this.context.cache.match(clone.src).then(dataUrl => clone.src = dataUrl.src);
         }
 
         if (isCustomElement(clone)) {
@@ -212,23 +222,6 @@ export class DocumentCloner {
             }
         }
         return node.cloneNode(false) as HTMLStyleElement;
-    }
-
-    createImageClone(node: HTMLImageElement): HTMLImageElement {
-        // image -> canvas;
-        // node.crossOrigin = 'anonymous';
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = node.width;
-        canvas.height = node.height;
-
-        ctx?.drawImage(node, 0, 0, node.width, node.height);
-
-        // 외부 이미지를 왜 못불러오는가? => 이미지 URL을 base64로 변환 필요
-        const image = new Image();
-        image.src = canvas.toDataURL();
-        return image;
     }
 
     createCanvasClone(canvas: HTMLCanvasElement): HTMLImageElement | HTMLCanvasElement {

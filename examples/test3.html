@@ -6,6 +6,8 @@
         <title>Document</title>
         <script src="./media/dom-to-image.js" type="text/javascript"></script>
         <script src="../dist/html2canvas.js"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.js"></script> -->
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js"></script> -->
         <link rel="stylesheet" href="./common.css" />
     </head>
     <body>
@@ -150,10 +152,6 @@
                 </div>
             </div>
             <div>
-                <p>iframe : 제약사항 추가해야할듯...</p>
-                <!-- <iframe src="./demo.html" frameborder="0"></iframe> -->
-            </div>
-            <div>
                 <p>외부 No-Cors</p>
                 <div
                     style="
@@ -163,23 +161,22 @@
                         gap: 20px;
                     "
                 >
-                    <!-- <div>
+                    <div>
                         <img
+                            id="temp1"
                             width="300"
                             height="300"
                             src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189"
                             alt="임시 이미지"
                             style="height: 100%; width: 100%; border: 2px dotted #888"
-                            crossorigin="anonymous"
                         />
-                    </div> -->
+                    </div>
                     <!-- <div>
                         <video
                             width="400"
                             height="300"
                             src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
                             controls
-                            crossorigin="anonymous"
                         ></video>
                     </div>
                     <div>
@@ -188,7 +185,6 @@
                             height="300"
                             src="https://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4"
                             controls
-                            crossorigin="anonymous"
                         ></video>
                     </div>
                     <div>
@@ -197,7 +193,6 @@
                             height="300"
                             controls
                             src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
-                            crossorigin="anonymous"
                         ></audio>
                     </div> -->
                 </div>
@@ -208,27 +203,38 @@
                 document.getElementById('btnHtml').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
-                        scale: 1,
+                        proxy : 'http://localhost:3000',
                         foreignObjectRendering: true,
                         allowTaint: true,
-                        useCORS: true // 외부 이미지를 불러오기 위해서는 useCORS를 사용해야함.
-                    }; // svg방식 렌더링
-                    html2canvas(document.body, options).then((imageUrl) => {
-                        const anchor = document.createElement('a');
-                        anchor.display = 'none';
-                        // fork후 수정한 버전은 imageURL으로 반환하도록 수정
-                        // anchor.href = imageUrl.toDataURL();
-                        anchor.href = imageUrl;
-                        anchor.download = 'html2canvas_canvas';
-                        document.body.append(anchor);
-                        anchor.click();
-                        anchor.remove();
+                    };
+                    html2canvas(document.body, options).then((canvas) => {
+                        const download = document.createElement('a');
+                        download.display = 'none';
+                        download.href = canvas.toDataURL();
+                        download.download = 'html2canvas_canvas';
+                        document.body.append(download);
+                        download.click();
+                        download.remove();
+                        console.timeEnd('timer');
+                    });
+                });
+                document.getElementById('btnHtml_canvas').addEventListener('click', () => {
+                    console.time('timer');
+                    let options = {
+                        proxy : 'http://localhost:3000',
+                    };
+                    html2canvas(document.body, options).then((canvas) => {
+                        const download = document.createElement('a');
+                        download.display = 'none';
+                        download.href = canvas.toDataURL();
+                        download.download = 'html2canvas_canvas';
+                        document.body.append(download);
+                        download.click();
+                        download.remove();
                         console.timeEnd('timer');
                     });
                 });
                 document.getElementById('btnDom').addEventListener('click', () => {
-                    // domtoimage는 다양한 형태로 변환 가능 svg, blob, png, jpeg, ...
-                    // 기본적으로 배경색을 지정안하면 투명색으로 표시함.
                     domtoimage
                         .toPng(document.body)
                         .then((imageUrl) => {

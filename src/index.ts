@@ -7,7 +7,6 @@ import {CanvasRenderer, RenderConfigurations, RenderOptions} from './render/canv
 import {ForeignObjectRenderer} from './render/canvas/foreignobject-renderer';
 import {Context, ContextOptions} from './core/context';
 import {fontFaces} from './core/font';
-import {images} from './core/images';
 
 export type Options = CloneOptions &
     WindowOptions &
@@ -20,7 +19,7 @@ export type Options = CloneOptions &
 
 // 폰트 끝
 
-const html2canvas = (element: HTMLElement, options: Partial<Options> = {}): Promise<string> => {
+const html2canvas = (element: HTMLElement, options: Partial<Options> = {}): Promise<HTMLCanvasElement> => {
     return renderElement(element, options);
 };
 
@@ -38,16 +37,8 @@ const loadFontStyle = async (): Promise<string> => {
     });
 };
 
-// 이미지 불러오기
-const loadImages = (node: HTMLElement) => {
-    return images()
-        .inlineAll(node)
-        .then(() => {
-            return node;
-        });
-};
 
-const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<string> => {
+const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<HTMLCanvasElement> => {
     if (!element || typeof element !== 'object') {
         return Promise.reject('Invalid element provided as first argument');
     }
@@ -94,6 +85,12 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
     const foreignObjectRendering = opts.foreignObjectRendering ?? false;
 
+    if (foreignObjectRendering) {
+        // Tree구조를 파싱하며 스타일만 추출하도록 할 예정
+        const root = parseTree(context, element);
+        console.warn(root);
+    }
+
     const cloneOptions: CloneConfigurations = {
         allowTaint: opts.allowTaint ?? false,
         onclone: opts.onclone,
@@ -122,8 +119,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         return Promise.reject(`Unable to find element in cloned iframe`);
     }
 
-    // image처리를 위한 로직 추가
-    await loadImages(clonedElement);
 
     const container = await documentCloner.toIFrame(ownerDocument, windowBounds);
 
@@ -178,7 +173,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
         const renderer = new CanvasRenderer(context, renderOptions);
         const canvas = await renderer.render(root);
-        imageUrl = canvas.toDataURL('image/jpeg');
+        imageUrl = canvas;
     }
 
     if (opts.removeContainer ?? true) {

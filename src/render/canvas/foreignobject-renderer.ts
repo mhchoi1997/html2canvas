@@ -27,7 +27,7 @@ export class ForeignObjectRenderer extends Renderer {
         );
     }
 
-    async render(element: HTMLElement): Promise<string> {
+    async render(element: HTMLElement): Promise<HTMLCanvasElement> {
         return new Promise((resolve) => {
             const svg = createForeignObjectSVG(
                 this.options.width * this.options.scale,
@@ -70,8 +70,7 @@ export class ForeignObjectRenderer extends Renderer {
 
                         ctx?.drawImage(image, 0, 0);
 
-                        const url = canvas.toDataURL('image/jpeg');
-                        resolve(url);
+                        resolve(canvas);
                     };
                 });
         });
