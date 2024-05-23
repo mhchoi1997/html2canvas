@@ -630,7 +630,8 @@ export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyl
                     const urlRegExp = /url\(["']?(.*?)["']?\)/;
                     // 만약 css background-image가 있다면?
                     const url = style.backgroundImage.match(urlRegExp)?.[1];
-                    url &&  context.cache.has(url) && context.cache.match(url).then(img => target.style.backgroundImage = `url(${img.src})`);
+                    // 스타일 변경은 Element.style.setProperty(styleName, value) 형태로 지정할것.
+                    url &&  context.cache.has(url) && context.cache.match(url).then(img => target.style.setProperty('background-image', `url(${img.src})`));
                 }
             }
             target.style.setProperty(property, style.getPropertyValue(property));
