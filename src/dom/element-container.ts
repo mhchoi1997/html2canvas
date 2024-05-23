@@ -25,6 +25,9 @@ export class ElementContainer {
         }
 
         this.styles = new CSSParsedDeclaration(context, window.getComputedStyle(element, null));
+        // 가상요소도 스타일을 가져오도록...
+        new CSSParsedDeclaration(context, window.getComputedStyle(element, ':before'));
+        new CSSParsedDeclaration(context, window.getComputedStyle(element, ':after'));
 
         if (isHTMLElementNode(element)) {
             if (this.styles.animationDuration.some((duration) => duration > 0)) {

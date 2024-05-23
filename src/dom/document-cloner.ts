@@ -163,15 +163,6 @@ export class DocumentCloner {
 
         const clone = node.cloneNode(false) as T;
 
-        if (this.options.inlineImages && window.getComputedStyle(node).backgroundImage) {
-            // 만약 css background-image가 있다면?
-            const urlRegExp = /url\(["']?(.*?)["']?\)/;
-            const imagePath = window.getComputedStyle(node).backgroundImage;
-            const url = imagePath.match(urlRegExp)?.[1];
-            url &&  this.context.cache.has(url) && this.context.cache.match(url).then(dataUrl => clone.style.backgroundImage = `url(${dataUrl.src})`);
-            
-        }
-
         if (isImageElement(clone)) {
             if (isImageElement(node) && node.currentSrc && node.currentSrc !== node.src) {
                 clone.src = node.currentSrc;
@@ -196,7 +187,7 @@ export class DocumentCloner {
 
     createCustomElementClone(node: HTMLElement): HTMLElement {
         const clone = document.createElement('html2canvascustomelement');
-        copyCSSStyles(node.style, clone);
+        copyCSSStyles(node.style, clone, this.options, this.context);
 
         return clone;
     }
@@ -394,7 +385,7 @@ export class DocumentCloner {
                 (style && (this.options.copyStyles || isSVGElementNode(node)) && !isIFrameElement(node)) ||
                 copyStyles
             ) {
-                copyCSSStyles(style, clone);
+                copyCSSStyles(style, clone, this.options, this.context);
             }
 
             if (node.scrollTop !== 0 || node.scrollLeft !== 0) {
@@ -468,7 +459,7 @@ export class DocumentCloner {
         const declaration = new CSSParsedPseudoDeclaration(this.context, style);
 
         const anonymousReplacedElement = document.createElement('html2canvaspseudoelement');
-        copyCSSStyles(style, anonymousReplacedElement);
+        copyCSSStyles(style, anonymousReplacedElement, this.options, this.context);
 
         declaration.content.forEach((token) => {
             if (token.type === TokenType.STRING_TOKEN) {
@@ -631,11 +622,19 @@ const ignoredStyleProperties = [
     'content' // Safari shows pseudoelements if content is set
 ];
 
-export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyleDeclaration, target: T): T => {
+export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyleDeclaration, target: T, options: CloneConfigurations, context: Context): T => {
     // Edge does not provide value for cssText
     for (let i = style.length - 1; i >= 0; i--) {
         const property = style.item(i);
         if (ignoredStyleProperties.indexOf(property) === -1) {
+            if (property === 'background-image') {
+                if (options.inlineImages) {
+                    const urlRegExp = /url\(["']?(.*?)["']?\)/;
+                    // 만약 css background-image가 있다면?
+                    const url = style.backgroundImage.match(urlRegExp)?.[1];
+                    url &&  context.cache.has(url) && context.cache.match(url).then(img => target.style.backgroundImage = `url(${img.src})`);
+                }
+            }
             target.style.setProperty(property, style.getPropertyValue(property));
         }
     }
