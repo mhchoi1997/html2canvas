@@ -85,11 +85,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
     const foreignObjectRendering = opts.foreignObjectRendering ?? false;
 
-    if (foreignObjectRendering) {
-        // Tree구조를 파싱하며 스타일만 추출하도록 할 예정
-        const root = parseTree(context, element);
-        console.warn(root);
-    }
+    foreignObjectRendering && parseTree(context, element);
 
     const cloneOptions: CloneConfigurations = {
         allowTaint: opts.allowTaint ?? false,
@@ -126,8 +122,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         isBodyElement(clonedElement) || isHTMLElement(clonedElement)
             ? parseDocumentSize(clonedElement.ownerDocument)
             : parseBounds(context, clonedElement);
-
-    console.warn(` [html2canvas ::: height] ----------- ${height}`);
 
     // body의 offsetHeight보다 document.body.scrollHeight가 더 클 경우
     let isBodyResize = false;

@@ -19,3 +19,4 @@ tests/reftests.js
 .rpt2_cache
 examples
 dist
+examples_sample

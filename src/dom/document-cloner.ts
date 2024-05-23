@@ -116,12 +116,10 @@ export class DocumentCloner {
                 }
 
                 documentClone.fonts.ready
-                    .then((fontFaceSet: any) => {
-                        console.warn('documentClone.fonts.ready', fontFaceSet);
+                    .then(() => {
                         return true;
                     })
                     .then(async () => {
-                        console.warn('documentClone.fonts.ready --- then after');
                         if (/(AppleWebKit)/g.test(navigator.userAgent)) {
                             await imagesReady(documentClone);
                         }

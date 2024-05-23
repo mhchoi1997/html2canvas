@@ -60,15 +60,36 @@ export class Cache {
         return this._cache[src];
     }
 
+    async sameImage(key: string): Promise<string> {
+        return new Promise((resolve) => {
+            // sameOrigin인 경우 처리
+            const image = new Image();
+            image.src = key;
+            image.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                ctx?.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                resolve(canvas.toDataURL());
+            }
+        });
+    }
+
     private async loadImage(key: string) {
-        const useCORS = !isInlineImage(key) && this._options.useCORS === true && FEATURES.SUPPORT_CORS_IMAGES;
+        const isSameOrigin = CacheStorage.isSameOrigin(key);
+        const useCORS =
+            !isInlineImage(key) && this._options.useCORS === true && FEATURES.SUPPORT_CORS_IMAGES && !isSameOrigin;
         const useProxy =
             !isInlineImage(key) &&
+            !isSameOrigin &&
             !isBlobImage(key) &&
             typeof this._options.proxy === 'string' &&
             FEATURES.SUPPORT_CORS_XHR &&
             !useCORS;
         if (
+            !isSameOrigin &&
             this._options.allowTaint === false &&
             !isInlineImage(key) &&
             !isBlobImage(key) &&
@@ -81,6 +102,8 @@ export class Cache {
         let src = key;
         if (useProxy) {
             src = await this.proxy(src);
+        } else {
+            src = await this.sameImage(src);
         }
 
         this.context.logger.debug(`Added image ${key.substring(0, 256)}`);
