@@ -172,7 +172,7 @@ export class DocumentCloner {
             }
 
             if (this.options.inlineImages) {
-                this.context.cache.match(clone.src).then(dataUrl => clone.src = dataUrl.src);
+                this.context.cache.has(clone.src) && this.context.cache.match(clone.src).then(img => clone.src = img.src);
             }
         }
 
