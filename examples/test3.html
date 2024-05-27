@@ -4,153 +4,390 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
-        <script src="./media/dom-to-image.js" type="text/javascript"></script>
+        <script src="./media/dom-to-image.js"></script>
         <script src="../dist/html2canvas.js"></script>
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.js"></script> -->
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js"></script> -->
         <link rel="stylesheet" href="./common.css" />
         <style>
+		/* latin */
+            @font-face {
+                font-family: 'Lora';
+                font-style: normal;
+                font-weight: 400;
+                src: url(./fonts/0QI6MX1D_JOuGQbT0gvTJPa787weuxJBkq0.woff2) format('woff2');
+            }
+            p {
+                font-family: Lora, serif;
+            }
+            .normal {
+                font-variant-ligatures: normal;
+            }
+
+            .none {
+                font-variant-ligatures: none;
+            }
+
+            .common-ligatures {
+                font-variant-ligatures: common-ligatures;
+            }
+
+            .no-common-ligatures {
+                font-variant-ligatures: no-common-ligatures;
+            }
+
+            .discretionary-ligatures {
+                font-variant-ligatures: discretionary-ligatures;
+            }
+
+            .no-discretionary-ligatures {
+                font-variant-ligatures: no-discretionary-ligatures;
+            }
+
+            .historical-ligatures {
+                font-variant-ligatures: historical-ligatures;
+            }
+
+            .no-historical-ligatures {
+                font-variant-ligatures: no-historical-ligatures;
+            }
+
+            .contextual {
+                font-variant-ligatures: contextual;
+            }
+
+            .no-contextual {
+                font-variant-ligatures: no-contextual;
+            }
             .virtual-element {
-        position: relative;
-        display: block;
-        width: 100%;
-        max-width: 700px;
-      }
+                position: relative;
+                display: block;
+                width: 100%;
+                max-width: 700px;
+            }
 
-      .virtual-element::before,
-      .virtual-element::after {
-        position: absolute;
-        display: block;
-        content: "";
-        width: 37px;
-        height: 32px;
-        top: 50%;
-        margin-top: -16px;
-      }
+            .virtual-element::before,
+            .virtual-element::after {
+                position: absolute;
+                display: block;
+                content: "";
+                width: 37px;
+                height: 32px;
+                top: 50%;
+                margin-top: -16px;
+            }
 
-      .virtual-element::before {
-        left: 0;
-        background-image: url("./media/lake.jpg");
-      }
+            .virtual-element::before {
+                left: 0;
+                background-image: url("./media/lake.jpg");
+            }
 
-      .virtual-element::after {
-        right: 0;
-        background-image: url("./media/lake.jpg");
-      }
+            .virtual-element::after {
+                right: 0;
+                background-image: url("./media/lake.jpg");
+            }
+
+            .grid {
+                padding: 10px;display: grid; 
+                grid-template-columns: repeat(6, 200px); 
+                grid-template-rows: repeat(6, 1fr); 
+                gap: 5px;
+            }
+
+            .grid > div {
+                border: 1px solid black;
+            }
+
+
+            .row {
+                display: flex;
+                flex: 1 auto;
+                flex-direction: row;
+                flex-wrap: wrap;
+                height: auto;
+            }
+
+            .col {
+                display: flex;
+                flex: 1 auto;
+                flex-direction: column;
+                height: auto;
+            }
+
+            .cell {
+                margin: 0.5em;
+                padding: 0.5em;
+                background-color: #fff;
+                overflow: hidden;
+                text-align: center;
+            }
+
+            .note {
+                background: #fff3d4;
+                padding: 1em;
+                margin: 0.5em 0.5em 0;
+                font: 0.8em sans-serif;
+                text-align: left;
+                white-space: nowrap;
+            }
+
+            .note + .row .cell {
+                margin-top: 0;
+            }
+
+            .container {
+                position: relative;
+                background: linear-gradient(to right, #000 0%, transparent 50%, #fff 100%),
+                    linear-gradient(to bottom, #ff0 0%, #f0f 50%, #0ff 100%);
+                width: 150px;
+                height: 150px;
+                margin: 0 auto;
+            }
+
+            .R {
+                transform-origin: center;
+                transform: rotate(-30deg);
+                fill: url(#red);
+            }
+
+            .G {
+                transform-origin: center;
+                transform: rotate(90deg);
+                fill: url(#green);
+            }
+
+            .B {
+                transform-origin: center;
+                transform: rotate(210deg);
+                fill: url(#blue);
+            }
+
+            .isolate .group {
+                isolation: isolate;
+            }
+
+            .normal .item {
+                mix-blend-mode: normal;
+            }
+            .multiply .item {
+                mix-blend-mode: multiply;
+            }
+            .screen .item {
+                mix-blend-mode: screen;
+            }
+            .overlay .item {
+                mix-blend-mode: overlay;
+            }
+            .darken .item {
+                mix-blend-mode: darken;
+            }
+            .lighten .item {
+                mix-blend-mode: lighten;
+            }
+            .color-dodge .item {
+                mix-blend-mode: color-dodge;
+            }
+            .color-burn .item {
+                mix-blend-mode: color-burn;
+            }
+            .hard-light .item {
+                mix-blend-mode: hard-light;
+            }
+            .soft-light .item {
+                mix-blend-mode: soft-light;
+            }
+            .difference .item {
+                mix-blend-mode: difference;
+            }
+            .exclusion .item {
+                mix-blend-mode: exclusion;
+            }
+            .hue .item {
+                mix-blend-mode: hue;
+            }
+            .saturation .item {
+                mix-blend-mode: saturation;
+            }
+            .color .item {
+            mix-blend-mode: color;
+            }
+            .luminosity .item {
+                mix-blend-mode: luminosity;
+            }
+            .plus-darker .item {
+                mix-blend-mode: plus-darker;
+            }
+            .plus-lighter .item {
+                mix-blend-mode: plus-lighter;
+            }
+
+            table {
+                border-collapse: collapse;
+            }
+
+            td,
+            th {
+                border: 2px black solid;
+                padding: 4px;
+            }
+
+            th {
+                background-color: lightgray;
+            }
+
+            .experimental {
+                display: none;
+            }
+
+            .notice {
+                display: table-row;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            @supports (writing-mode: sideways-lr) {
+                .experimental {
+                    display: table-row;
+                }
+                .notice {
+                    display: none;
+                }
+            }
+
+            .text1 td {
+                writing-mode: horizontal-tb;
+            }
+
+            .text2 td {
+                writing-mode: vertical-lr;
+            }
+
+            .text3 td {
+                writing-mode: vertical-rl;
+            }
+
+            .text4 td {
+                writing-mode: sideways-lr;
+            }
+
+            .text5 td {
+                writing-mode: sideways-rl;
+            }
+
+            .filter-test {
+                /* blur : 흐리게 */
+                /* filter: blur(3px); */
+                /* brightness : 밝게 */
+                /* filter: brightness(150%); */
+                /* contrast : 대비 */
+                /* filter:contrast(150%); */
+                /* grayscale : 흑백 */
+                /* filter: grayscale(50) */
+                /* invert : 색반전 */
+                filter : invert(30)
+            }
         </style>
     </head>
     <body>
         <button id="btnHtml">HTML2CAVANS - SVG</button>
         <button id="btnHtml_canvas">HTML2CAVANS - CANVAS</button>
         <button id="btnDom">DOM-TO-IMAGE</button>
-        <p class="virtual-element">
-      가상요소로 텍스트 앞, 뒤 이미지 넣기<br />
-      가상 요소자를 사용하면 HTML 구조를 변경하지 않고도 스타일을 적용할 수
-      있고<br />
-      요소를 동적으로 생성하거나 특정 위치에 스타일을 추가할 수 있어서 구조의
-      유연성 있다는데<br />
-      어떨 때 사용하면 효율이 높을까? 그냥 HTML을 직접 생성하는 것과 비교했을
-      때의 이점이 언제 존재할까?
-    </p>
-        <div
-            style="width: 200px; height: 200px; background: repeating-linear-gradient(white, yellow 20px, green 40px)"
-        ></div>
         <div>
-            <p>background-blend-mode</p>
-            <div id="background-blend-mode" class="test3">
-                <p>background-blend-mode</p>
-            </div>
+            <h3 style="color: #000">Hello world!</h3>
         </div>
         <div>
-            <p>box-shadow</p>
-            <div id="test1"></div>
-            <div id="test2"></div>
+            <h3 style="font-weight: bold;">Filter</h3>
+            <img src="./media/a.png" class="filter-test">
         </div>
-        <div>
-            <p>font-feature-setting</p>
-            <div id="example-element" style="font-feature-settings: 'liga' 0">
-                <p>Difficult waffles</p>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td><span class="tabular">0O</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="tabular">3.14</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="tabular">2.71</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+        <form action="/" onsubmit="javascript:void(0)">
+            <div id="capture" class="grid">
+                <div>
+                    <p>text</p>
+                    <input type="text" />
+                </div>
+                <div>
+                    <p>password</p>
+                    <input type="password" />
+                </div>
+                <div>
+                    <p>number</p>
+                    <input type="number" />
+                </div>
+                <div>
+                    <p>email</p>
+                    <input type="email" />
+                </div>
+                <div>
+                    <p>tel</p>
+                    <input type="tel" />
+                </div>
+                <div>
+                    <p>search</p>
+                    <input type="search" />
+                </div>
+                <div>
+                    <p>button(input)</p>
+                    <input type="button" value="input" />
+                    <input type="submit" />
+                    <input type="reset" />
+                </div>
+                <div>
+                    <p>checkbox</p>
+                    <input type="checkbox" />
+                </div>
+                <div>
+                    <p>radio</p>
+                    <input type="radio" name="radio" />
+                    <input type="radio" name="radio" />
+                </div>
+                <div>
+                    <p>date</p>
+                    <input type="date" name="" />
+                </div>
+                <div>
+                    <p>range</p>
+                    <input type="range" name="" />
+                </div>
+                <div>
+                    <p>file</p>
+                    <input type="file" />
+                </div>
+                <div>
+                    <p>textarea</p>
+                    <textarea name="" ></textarea>
+                </div>
+                <div>
+                    <p>select</p>
+                    <select name="">
+                        <option value="a1">A1</option>
+                        <option value="a2">A2</option>
+                    </select>
+                </div>
+                <div>
+                    <p>month</p>
+                    <input type="month">
+                </div>
+                <div>
+                    <p>datetime</p>
+                    <input type="datetime">
+                </div>
+                <div>
+                    <p>datetime-local</p>
+                    <input type="datetime-local">
+                </div>
+                <div>
+                    <p>url</p>
+                    <input type="url">
+                </div>
+                <div>
+                    <p>week</p>
+                    <input type="week">
+                </div>
+                <div>
+                    <p>image</p>
+                    <input type="image" src="./media/lake.jpg" alt="" width="100" height="100">
+                </div>
             </div>
-        </div>
-        <div>
-            <p>box-decoration-break</p>
-            <span class="span1"
-                ><b>inline-slice</b> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                galley of type and scrambled it to make a type specimen book.
-            </span>
-        </div>
-
-        <div id="capture" style="padding: 10px">
-            <div>
-                <h4 style="color: #000">Hello world!</h4>
-            </div>
-            <div>
-                <p>text</p>
-                <input type="text" />
-            </div>
-            <div>
-                <p>password</p>
-                <input type="password" />
-            </div>
-            <div>
-                <p>number</p>
-                <input type="number" />
-            </div>
-            <div>
-                <p>email</p>
-                <input type="email" />
-            </div>
-            <div>
-                <p>tel</p>
-                <input type="tel" />
-            </div>
-            <div>
-                <p>search</p>
-                <input type="search" />
-            </div>
-            <div>
-                <p>button(input)</p>
-                <input type="button" value="input" />
-                <input type="submit" />
-                <input type="reset" />
-            </div>
-            <div>
-                <p>checkbox</p>
-                <input type="checkbox" />
-            </div>
-            <div>
-                <p>radio</p>
-                <input type="radio" id="a1" name="radio" />
-                <input type="radio" id="a2" name="radio" />
-            </div>
-            <div>
-                <p>date</p>
-                <input type="date" name="" id="" />
-            </div>
-            <div>
-                <p>range</p>
-                <input type="range" name="" id="" />
-            </div>
-            <input type="file" />
-            <div><p>file</p></div>
-            <div>
-                <p>textarea</p>
-                <textarea name="" id=""></textarea>
-            </div>
+        </form>
+        <div style="display: flex;">
             <div>
                 <p>svg</p>
                 <svg width="250" height="200">
@@ -167,132 +404,770 @@
                     />
                 </svg>
             </div>
-            <div>
-                <p>select</p>
-                <select name="" id="">
-                    <option value="a1">A1</option>
-                    <option value="a2">A2</option>
-                </select>
+            <div id="canvas">
+                <p>Canvas</p>
             </div>
-            <div>
-                <p>로컬 리소스</p>
-                <div style="display: flex">
-                    <div>
-                        <img width="300" height="300" src="./media/a.png" alt="임시 이미지" />
-                        <img src="./media/happy.svg" alt="" srcset="" width="300" height="300" />
-                    </div>
-                    <div>
-                        <video width="300" height="300" src="./media/flower.webm" controls></video>
-                    </div>
-                    <div>
-                        <audio width="300" height="300" controls src="./media/t-rex-roar.mp3"></audio>
-                    </div>
+        </div>
+        <div>
+            <p>로컬 리소스</p>
+            <div style="display: flex">
+                <div>
+                    <img width="300" height="300" src="./media/a.png" alt="임시 이미지" />
+                    <img src="./media/happy.svg" alt="" srcset="" width="300" height="300" />
                 </div>
-            </div>
-            <div>
-                <p>외부 No-Cors</p>
-                <div
-                    style="
-                        display: grid;
-                        grid-template-columns: 300px 400px 400px 300px;
-                        grid-template-rows: 300px;
-                        gap: 20px;
-                    "
-                >
-                    <div>
-                        <img
-                            id="temp1"
-                            width="300"
-                            height="300"
-                            src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189"
-                            alt="임시 이미지"
-                            style="height: 100%; width: 100%; border: 2px dotted #888"
-                        />
-                    </div>
-                    <!-- <div>
-                        <video
-                            width="400"
-                            height="300"
-                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
-                            controls
-                        ></video>
-                    </div>
-                    <div>
-                        <video
-                            width="400"
-                            height="300"
-                            src="https://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4"
-                            controls
-                        ></video>
-                    </div>
-                    <div>
-                        <audio
-                            width="300"
-                            height="300"
-                            controls
-                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
-                        ></audio>
-                    </div> -->
+                <div>
+                    <video width="300" height="300" src="./media/flower.webm" controls></video>
+                </div>
+                <div>
+                    <audio width="300" height="300" controls src="./media/t-rex-roar.mp3"></audio>
                 </div>
             </div>
         </div>
+        <!-- <div>
+            <p>외부 No-Cors</p>
+            <div style="display: grid; grid-template-columns: 300px 400px 400px 300px; grid-template-rows: 300px; gap: 20px;">
+                <div>
+                    <img width="300" height="300" src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189" crossorigin="anonymous"/>
+                </div>
+                <div>
+                    <video controls width="250">
+                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
+                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+                    </video>
+                </div>
+                <div>
+                    <audio width="300" height="300" controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" crossorigin="anonymous"></audio>
+                </div>
+            </div>
+        </div> -->
+        <h3 style="font-weight: bold;">writing-mode</h3>
+        <div>
+            <table>
+                <caption>
+                  Using multiple writing modes
+                </caption>
+                <tr>
+                  <th>Value</th>
+                  <th>Vertical script</th>
+                  <th>Horizontal (LTR) script</th>
+                  <th>Horizontal (RTL) script</th>
+                  <th>Mixed script</th>
+                </tr>
+                <tr class="text1">
+                  <th>horizontal-tb</th>
+                  <td>我家没有电脑。</td>
+                  <td>Example text</td>
+                  <td>מלל ארוך לדוגמא</td>
+                  <td>1994年に至っては</td>
+                </tr>
+                <tr class="text2">
+                  <th>vertical-lr</th>
+                  <td>我家没有电脑。</td>
+                  <td>Example text</td>
+                  <td>מלל ארוך לדוגמא</td>
+                  <td>1994年に至っては</td>
+                </tr>
+                <tr class="text3">
+                  <th>vertical-rl</th>
+                  <td>我家没有电脑。</td>
+                  <td>Example text</td>
+                  <td>מלל ארוך לדוגמא</td>
+                  <td>1994年に至っては</td>
+                </tr>
+                <tr class="experimental text4">
+                  <th>sideways-lr</th>
+                  <td>我家没有电脑。</td>
+                  <td>Example text</td>
+                  <td>מלל ארוך לדוגמא</td>
+                  <td>1994年に至っては</td>
+                </tr>
+                <tr class="experimental text5">
+                  <th>sideways-rl</th>
+                  <td>我家没有电脑。</td>
+                  <td>Example text</td>
+                  <td>מלל ארוך לדוגמא</td>
+                  <td>1994年に至っては</td>
+                </tr>
+              </table>
+              <p class="notice">
+                Your browser does not support the <code>sideways-lr</code> or
+                <code>sideways-rl</code> values.
+              </p>
+              
+        </div>
+        <div>
+            <h3 style="font-weight: bold;">iframe</h3>
+            <iframe src="./frame.html" frameborder="0"></iframe>
+        </div>
+        <div>
+            <h3 style="font-weight: bold;">mix-blend-mode</h3>
+            <div class="grid">
+                <div class="cell">
+                    normal
+                    <div class="container normal">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <defs>
+                            <linearGradient id="red">
+                              <stop offset="0" stop-color="hsl(0 100% 50%)" />
+                              <stop offset="100%" stop-color="hsl(0 0% 100%)" />
+                            </linearGradient>
+                            <linearGradient id="green">
+                              <stop offset="0" stop-color="hsl(120 100% 50%)" />
+                              <stop offset="100%" stop-color="hsl(120 0% 100%)" />
+                            </linearGradient>
+                            <linearGradient id="blue">
+                              <stop offset="0" stop-color="hsl(240 100% 50%)" />
+                              <stop offset="100%" stop-color="hsl(240 0% 100%)" />
+                            </linearGradient>
+                          </defs>
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    multiply
+                    <div class="container multiply">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    darken
+                    <div class="container darken">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    screen
+                    <div class="container screen">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    lighten
+                    <div class="container lighten">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    overlay
+                    <div class="container overlay">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    color-dodge
+                    <div class="container color-dodge">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    color-burn
+                    <div class="container color-burn">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    hard-light
+                    <div class="container hard-light">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    soft-light
+                    <div class="container soft-light">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    difference
+                    <div class="container difference">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    exclusion
+                    <div class="container exclusion">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    hue
+                    <div class="container hue">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    saturation
+                    <div class="container saturation">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    color
+                    <div class="container color">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    luminosity
+                    <div class="container luminosity">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    plus-darker
+                    <div class="container plus-darker">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cell">
+                    plus-lighter
+                    <div class="container plus-lighter">
+                      <div class="group">
+                        <div class="item firefox"></div>
+                        <svg class="item" viewBox="0 0 150 150">
+                          <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                    <div class="cell">
+                      normal
+                      <div class="container normal">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      multiply
+                      <div class="container multiply">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      darken
+                      <div class="container darken">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      screen
+                      <div class="container screen">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      lighten
+                      <div class="container lighten">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      overlay
+                      <div class="container overlay">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      color-dodge
+                      <div class="container color-dodge">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      color-burn
+                      <div class="container color-burn">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      hard-light
+                      <div class="container hard-light">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      soft-light
+                      <div class="container soft-light">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      difference
+                      <div class="container difference">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      exclusion
+                      <div class="container exclusion">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      hue
+                      <div class="container hue">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      saturation
+                      <div class="container saturation">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      color
+                      <div class="container color">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      luminosity
+                      <div class="container luminosity">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      plus-darker
+                      <div class="container plus-darker">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cell">
+                      plus-lighter
+                      <div class="container plus-lighter">
+                        <div class="group">
+                          <div class="item firefox"></div>
+                          <svg class="item" viewBox="0 0 150 150">
+                            <ellipse class="item R" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item G" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                            <ellipse class="item B" cx="75" cy="75" rx="25" ry="70"></ellipse>
+                          </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h3 style="font-weight: bold;">virtual element</h3>
+            <p class="virtual-element">
+                가상요소로 텍스트 앞, 뒤 이미지 넣기<br />
+                가상 요소자를 사용하면 HTML 구조를 변경하지 않고도 스타일을 적용할 수
+                있고<br />
+                요소를 동적으로 생성하거나 특정 위치에 스타일을 추가할 수 있어서 구조의
+                유연성 있다는데<br />
+                어떨 때 사용하면 효율이 높을까? 그냥 HTML을 직접 생성하는 것과 비교했을
+                때의 이점이 언제 존재할까?
+            </p>
+        </div>
+        <div>
+            <h3 style="font-weight: bold;">repeating-linear-gradient</h3>
+            <div
+                style="width: 200px; height: 200px; background: repeating-linear-gradient(white, yellow 20px, green 40px)"
+            ></div>
+        </div>
+        <div>
+            <h3 style="font-weight: bold;">background-blend-mode</h3>
+            <div id="background-blend-mode" class="test3">
+                <p>background-blend-mode</p>
+            </div>
+        </div>
+        <div>
+            <h3 style="font-weight: bold;">box-shadow</h3>
+            <div id="test1"></div>
+            <div id="test2"></div>
+        </div>
+        <div>
+            <h3 style="font-weight: bold;">font-feature-setting</h3>
+            <div id="example-element">
+                <p style="font-feature-settings: 'smcp', 'zero'">Difficult waffles</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><span class="tabular">0O</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tabular">3.14</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tabular">2.71</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h3 style="font-weight: bold;">box-decoration-break</h3>
+            <span class="span1"
+                ><b>inline-slice</b> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+                Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                galley of type and scrambled it to make a type specimen book.
+            </span>
+        </div>
+		<div>
+            <h3 style="font-weight: bold;">font-variant-ligatures</h3>
+            <p class="normal">
+            normal<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="none">
+            none<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="common-ligatures">
+            common-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="no-common-ligatures">
+            no-common-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="discretionary-ligatures">
+            discretionary-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="no-discretionary-ligatures">
+            no-discretionary-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="historical-ligatures">
+            historical-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="no-historical-ligatures">
+            no-historical-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="contextual">
+            contextual<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="no-contextual">
+            no-contextual<br />
+            if fi ff tf ft jf fj
+            </p>
+        </div>
+        <div style="width: 100px; height: 100px;"></div>
         <script>
+
+            const filedownload = (canvas, filename) => {
+                const download = document.createElement('a');
+                download.display = 'none';
+                download.href = typeof canvas !== 'string'
+                    ? canvas.toDataURL()
+                    : canvas;
+                download.download = filename;
+                document.body.append(download);
+                download.click();
+                download.remove();
+                console.timeEnd('timer');
+            }
+
+            const myFilter = (node) => {
+                return node.id !== 'canvas';
+            }
+
             window.onload = function () {
                 document.getElementById('btnHtml').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
-                        proxy : 'http://localhost:3001',
                         foreignObjectRendering: true,
-                        allowTaint: true,
+                        proxy : 'http://localhost:3001',
+                        ignoreElements : (element) => {
+                            const canvas = element.id === 'canvas';
+                            // true를 반환하면 무시한다.
+                            return !!canvas;
+                        }
                     };
-                    html2canvas(document.body, options).then((canvas) => {
-                        const download = document.createElement('a');
-                        download.display = 'none';
-                        download.href = canvas.toDataURL();
-                        download.download = 'html2canvas_canvas';
-                        document.body.append(download);
-                        download.click();
-                        download.remove();
-                        console.timeEnd('timer');
-                    });
+                    html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
                 });
                 document.getElementById('btnHtml_canvas').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
-                        proxy : 'http://localhost:3000',
+                        proxy : 'http://localhost:3001',
+                        ignoreElements : (element) => {
+                            const canvas = element.id === 'canvas';
+                            // true를 반환하면 무시한다.
+                            return !!canvas;
+                        }
                     };
-                    html2canvas(document.body, options).then((canvas) => {
-                        const download = document.createElement('a');
-                        download.display = 'none';
-                        download.href = canvas.toDataURL();
-                        download.download = 'html2canvas_canvas';
-                        document.body.append(download);
-                        download.click();
-                        download.remove();
-                        console.timeEnd('timer');
-                    });
+                    html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
                 document.getElementById('btnDom').addEventListener('click', () => {
+                    console.time('timer');
                     domtoimage
-                        .toPng(document.body)
+                        .toPng(document.body, { filter : myFilter })
                         .then((imageUrl) => {
                             let image = new Image();
                             image.src = imageUrl;
 
                             image.onload = function () {
-                                const anchor = document.createElement('a');
-                                anchor.display = 'none';
-                                anchor.href = imageUrl;
-                                anchor.download = 'dom-to-image';
-                                document.body.append(anchor);
-                                anchor.click();
-                                anchor.remove();
+                                filedownload(imageUrl, 'dom-to-image');
                             };
                         })
                         .catch((error) => {
                             console.log(error);
                         });
                 });
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = 300;
+                canvas.height = 300;
+
+
+                // ctx.beginPath();
+                // ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+                // ctx.stroke();
+
+                let image = new Image();
+                image.width = 100;
+                image.height = 100;
+                image.src = './media/a.png'
+
+                image.onload = function() {
+                    ctx.drawImage(image, 0, 0);
+                    document.querySelector('#canvas').append(canvas)
+                }
             };
         </script>
     </body>

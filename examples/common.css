@@ -1,41 +1,40 @@
-/* vietnamese */
-@font-face {
-    font-family: 'Danfo';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(https://fonts.gstatic.com/s/danfo/v2/snf3s0u_98t16THfK1Csj3N41ZqbYDeJQ7dSkPo.woff2) format('woff2');
-}
-/* latin-ext */
-@font-face {
-    font-family: 'Danfo';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(https://fonts.gstatic.com/s/danfo/v2/snf3s0u_98t16THfK1Csj3N41ZqbYDeJQrdSkPo.woff2) format('woff2');
-}
-/* latin */
-@font-face {
-    font-family: 'Danfo';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(https://fonts.gstatic.com/s/danfo/v2/snf3s0u_98t16THfK1Csj3N41ZqbYDeJTLdS.woff2) format('woff2');
-}
 
-* {
-    font-family: 'Danfo', serif;
+
+/* vietnamese */
+/* @font-face {
+    font-family: 'Reddit Mono';
+    font-style: normal;
+    font-weight: 200 900;
+    src: url(./fonts/oPWL_kRmmu4oQ88oo13o4-rERjtPRw.woff2) format('woff2');
+  } */
+  /* latin-ext */
+  /* @font-face {
+    font-family: 'Reddit Mono';
+    font-style: normal;
+    font-weight: 200 900;
+    src: url(./fonts/oPWL_kRmmu4oQ88oo13o4-rFRjtPRw.woff2) format('woff2');
+  } */
+  /* latin */
+  /* @font-face {
+    font-family: 'Reddit Mono';
+    font-style: normal;
+    font-weight: 200 900;
+    src: url(./fonts/oPWL_kRmmu4oQ88oo13o4-rLRjs.woff2) format('woff2');
+  } */
+
+  * {
+    /* font-family: 'Reddit Mono', serif;
     font-optical-sizing: auto;
     font-weight: 400;
-    font-style: normal;
-    font-variation-settings: 'ELSH' 0;
+    font-style: normal; */
+    font-variant-ligatures: contextual;
 }
 body {
     margin: 10px;
     border: 2px solid red;
     padding: 10px;
     box-sizing: border-box;
-    /* background-color: #fff; */
+    background-color: #fff;
 }
 
 span {
@@ -90,9 +89,9 @@ span {
 }
 
 .test3 {
-    background-image: url('https://tistory1.daumcdn.net/tistory/783187/skin/images/bg1-min.jpg');
-    /* background-image: url('./media/lake.jpg'); */
-    /* background-color: #4390e1; */
+    /* background-image: url('https://tistory1.daumcdn.net/tistory/783187/skin/images/bg1-min.jpg'); */
+    background-image: url('./media/lake.jpg');
+    background-color: #4390e1;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
