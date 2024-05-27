@@ -125,7 +125,7 @@ export const isSVGElement = (node: Element): node is SVGSVGElement => node.tagNa
 export const isBodyElement = (node: Element): node is HTMLBodyElement => node.tagName === 'BODY';
 export const isCanvasElement = (node: Element): node is HTMLCanvasElement => node.tagName === 'CANVAS';
 export const isVideoElement = (node: Element): node is HTMLVideoElement => node.tagName === 'VIDEO';
-export const isImageElement = (node: Element): node is HTMLImageElement => node.tagName === 'IMG';
+export const isImageElement = (node: Element): node is HTMLImageElement => node.tagName === 'IMG' || (node.tagName === 'INPUT' && (node as HTMLInputElement).type === 'image');
 export const isIFrameElement = (node: Element): node is HTMLIFrameElement => node.tagName === 'IFRAME';
 export const isStyleElement = (node: Element): node is HTMLStyleElement => node.tagName === 'STYLE';
 export const isScriptElement = (node: Element): node is HTMLScriptElement => node.tagName === 'SCRIPT';

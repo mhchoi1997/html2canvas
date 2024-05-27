@@ -290,13 +290,13 @@
         <button id="btnHtml">HTML2CAVANS - SVG</button>
         <button id="btnHtml_canvas">HTML2CAVANS - CANVAS</button>
         <button id="btnDom">DOM-TO-IMAGE</button>
-        <div>
+        <!-- <div>
             <h3 style="color: #000">Hello world!</h3>
         </div>
         <div>
             <h3 style="font-weight: bold;">Filter</h3>
             <img src="./media/a.png" class="filter-test">
-        </div>
+        </div> -->
         <form action="/" onsubmit="javascript:void(0)">
             <div id="capture" class="grid">
                 <div>
@@ -427,7 +427,7 @@
             <p>외부 No-Cors</p>
             <div style="display: grid; grid-template-columns: 300px 400px 400px 300px; grid-template-rows: 300px; gap: 20px;">
                 <div>
-                    <img width="300" height="300" src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189" crossorigin="anonymous"/>
+                    <img width="300" height="300" src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg" crossorigin="anonymous"/>
                 </div>
                 <div>
                     <video controls width="250">
@@ -495,10 +495,10 @@
               </p>
               
         </div>
-        <div>
+        <!-- <div>
             <h3 style="font-weight: bold;">iframe</h3>
             <iframe src="./frame.html" frameborder="0"></iframe>
-        </div>
+        </div> -->
         <div>
             <h3 style="font-weight: bold;">mix-blend-mode</h3>
             <div class="grid">
@@ -1111,11 +1111,11 @@
                     let options = {
                         foreignObjectRendering: true,
                         proxy : 'http://localhost:3001',
-                        ignoreElements : (element) => {
-                            const canvas = element.id === 'canvas';
-                            // true를 반환하면 무시한다.
-                            return !!canvas;
-                        }
+                        // ignoreElements : (element) => {
+                        //     const canvas = element.id === 'canvas';
+                        //     // true를 반환하면 무시한다.
+                        //     return !!canvas;
+                        // }
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
                 });
@@ -1123,18 +1123,19 @@
                     console.time('timer');
                     let options = {
                         proxy : 'http://localhost:3001',
-                        ignoreElements : (element) => {
-                            const canvas = element.id === 'canvas';
-                            // true를 반환하면 무시한다.
-                            return !!canvas;
-                        }
+                        // ignoreElements : (element) => {
+                        //     const canvas = element.id === 'canvas';
+                        //     // true를 반환하면 무시한다.
+                        //     return !!canvas;
+                        // }
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
                 document.getElementById('btnDom').addEventListener('click', () => {
                     console.time('timer');
                     domtoimage
-                        .toPng(document.body, { filter : myFilter })
+                        // .toPng(document.body, { filter : myFilter })
+                        .toPng(document.body)
                         .then((imageUrl) => {
                             let image = new Image();
                             image.src = imageUrl;
@@ -1162,7 +1163,10 @@
                 let image = new Image();
                 image.width = 100;
                 image.height = 100;
-                image.src = './media/a.png'
+                image.crossOrigin = 'anonymous';
+                // image.src = './media/a.png'
+                // 외부 이미지 X
+                image.src = 'https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg'
 
                 image.onload = function() {
                     ctx.drawImage(image, 0, 0);
