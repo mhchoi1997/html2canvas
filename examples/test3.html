@@ -1100,7 +1100,7 @@
             }
 
             const myFilter = (node) => {
-                return node.id !== 'canvas';
+                return node.tagName === 'INPUT';
             }
 
             window.onload = function () {
@@ -1109,7 +1109,7 @@
                     let options = {
                         foreignObjectRendering: true,
                         proxy : 'http://localhost:3000',
-                        // ignoreElements : myFilter
+                        ignoreElements : myFilter
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
                 });
@@ -1117,15 +1117,15 @@
                     console.time('timer');
                     let options = {
                       proxy : 'http://localhost:3000',
-                      // ignoreElements : myFilter
+                      ignoreElements : myFilter
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
                 document.getElementById('btnDom').addEventListener('click', () => {
                     console.time('timer');
                     domtoimage
-                        // .toPng(document.body, { filter : myFilter })
-                        .toPng(document.body)
+                        .toPng(document.body, { filter : myFilter })
+                        // .toPng(document.body)
                         .then((imageUrl) => {
                             let image = new Image();
                             image.src = imageUrl;
