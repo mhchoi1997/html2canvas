@@ -85,8 +85,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
     const foreignObjectRendering = opts.foreignObjectRendering ?? false;
 
-    // foreignObjectRendering true시 parseTree를 호출할 경우 2번 요소를 루프 돌기 때문에 주석 처리 (속도 이슈)
-    // foreignObjectRendering && parseTree(context, element);
+    foreignObjectRendering && parseTree(context, element);
 
     const cloneOptions: CloneConfigurations = {
         allowTaint: opts.allowTaint ?? false,
