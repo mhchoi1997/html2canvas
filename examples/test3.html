@@ -1100,18 +1100,12 @@
                 console.timeEnd('timer');
             }
 
-            // const myFilter = (node) => {
-            //     // return node.tagName === 'INPUT';
-            //     return false;
-            // }
-
             window.onload = function () {
                 document.getElementById('btnHtml').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
                         foreignObjectRendering: true,
                         proxy : 'http://localhost:3000',
-                        // ignoreElements : myFilter
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
                 });
@@ -1119,14 +1113,12 @@
                     console.time('timer');
                     let options = {
                       proxy : 'http://localhost:3000',
-                      // ignoreElements : myFilter
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
                 document.getElementById('btnDom').addEventListener('click', () => {
                     console.time('timer');
                     domtoimage
-                        // .toPng(document.body, { filter : myFilter })
                         .toPng(document.body)
                         .then((imageUrl) => {
                             let image = new Image();
@@ -1147,16 +1139,10 @@
                 canvas.width = 300;
                 canvas.height = 300;
 
-
-                // ctx.beginPath();
-                // ctx.arc(100, 75, 50, 0, 2 * Math.PI);
-                // ctx.stroke();
-
                 let image = new Image();
                 image.width = 100;
                 image.height = 100;
                 image.crossOrigin = 'anonymous'; // crossOrigin anonymous속성을 지정해야 외부 이미지 로드 가능
-                // image.src = './media/a.png'
                 // 외부 이미지 X
                 image.src = 'https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg'
 

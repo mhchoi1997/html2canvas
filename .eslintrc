@@ -21,5 +21,6 @@
                 "endOfLine": "off"
             }
         ]
-    }
+    },
+    "ignorePatterns" : ["*.js"]
 }
