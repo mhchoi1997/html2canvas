@@ -85,7 +85,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
     const foreignObjectRendering = opts.foreignObjectRendering ?? false;
 
-    foreignObjectRendering && parseTree(context, element);
+    // foreignObjectRendering && parseTree(context, element);
 
     const cloneOptions: CloneConfigurations = {
         allowTaint: opts.allowTaint ?? false,
