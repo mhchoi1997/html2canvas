@@ -9,13 +9,13 @@
         <link rel="stylesheet" href="./common.css" />
         <!-- <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" crossorigin="anonymous"> -->
         <style>
-          /* @font-face {
+          @font-face {
             font-family: 'Lora';
             font-style: normal;
             font-weight: 400 700;
             font-display: swap;
             src: url(https://fonts.gstatic.com/s/lora/v35/0QIvMX1D_JOuMwr7Iw.woff2) format('woff2');
-          } */
+          }
 
           p {
               font-family: Lora, serif;
@@ -304,7 +304,7 @@
                 </div>
                 <div>
                     <p>password</p>
-                    <input type="password" />
+                    <input type="password" autocomplete="off" />
                 </div>
                 <div>
                     <p>number</p>
@@ -423,7 +423,7 @@
                 </div>
             </div>
         </div>
-        <!-- <div>
+        <div>
             <p>외부 No-Cors</p>
             <div style="display: grid; grid-template-columns: 300px 400px 400px 300px; grid-template-rows: 300px; gap: 20px;">
                 <div>
@@ -439,7 +439,7 @@
                     <audio width="300" height="300" controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" crossorigin="anonymous"></audio>
                 </div>
             </div>
-        </div> -->
+        </div>
         <h3 style="font-weight: bold;">writing-mode</h3>
         <div>
             <table>
@@ -495,10 +495,10 @@
               </p>
               
         </div>
-        <!-- <div>
+        <div>
             <h3 style="font-weight: bold;">iframe</h3>
             <iframe src="./frame.html" frameborder="0"></iframe>
-        </div> -->
+        </div>
         <div>
             <h3 style="font-weight: bold;">mix-blend-mode</h3>
             <div class="grid">
@@ -1099,9 +1099,10 @@
                 console.timeEnd('timer');
             }
 
-            const myFilter = (node) => {
-                return node.tagName === 'INPUT';
-            }
+            // const myFilter = (node) => {
+            //     // return node.tagName === 'INPUT';
+            //     return false;
+            // }
 
             window.onload = function () {
                 document.getElementById('btnHtml').addEventListener('click', () => {
@@ -1109,7 +1110,7 @@
                     let options = {
                         foreignObjectRendering: true,
                         proxy : 'http://localhost:3000',
-                        ignoreElements : myFilter
+                        // ignoreElements : myFilter
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
                 });
@@ -1117,15 +1118,15 @@
                     console.time('timer');
                     let options = {
                       proxy : 'http://localhost:3000',
-                      ignoreElements : myFilter
+                      // ignoreElements : myFilter
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
                 document.getElementById('btnDom').addEventListener('click', () => {
                     console.time('timer');
                     domtoimage
-                        .toPng(document.body, { filter : myFilter })
-                        // .toPng(document.body)
+                        // .toPng(document.body, { filter : myFilter })
+                        .toPng(document.body)
                         .then((imageUrl) => {
                             let image = new Image();
                             image.src = imageUrl;
