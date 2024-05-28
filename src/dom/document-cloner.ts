@@ -21,7 +21,7 @@ import {isIdentToken, nonFunctionArgSeparator} from '../css/syntax/parser';
 import {TokenType} from '../css/syntax/tokenizer';
 import {CounterState, createCounterText} from '../css/types/functions/counter';
 import {LIST_STYLE_TYPE, listStyleType} from '../css/property-descriptors/list-style-type';
-import {CSSParsedCounterDeclaration, CSSParsedPseudoDeclaration} from '../css/index';
+import {CSSParsedCounterDeclaration, CSSParsedDeclaration, CSSParsedPseudoDeclaration} from '../css/index';
 import {getQuote} from '../css/property-descriptors/quotes';
 import {Context} from '../core/context';
 import {DebuggerType, isDebugging} from '../core/debugger';
@@ -335,6 +335,10 @@ export class DocumentCloner {
 
         if (!node.ownerDocument) {
             return node.cloneNode(false);
+        }
+
+        if (node instanceof HTMLElement && this.options.inlineImages) {
+            new CSSParsedDeclaration(this.context, globalThis.getComputedStyle(node, null));
         }
 
         const window = node.ownerDocument.defaultView;
