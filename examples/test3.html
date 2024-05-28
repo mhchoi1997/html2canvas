@@ -8,7 +8,6 @@
         <script src="../dist/html2canvas.js"></script>
         <link rel="stylesheet" href="./common.css" />
         <style>
-		/* latin */
             @font-face {
                 font-family: 'Lora';
                 font-style: normal;
@@ -87,8 +86,8 @@
 
             .grid {
                 padding: 10px;display: grid; 
-                grid-template-columns: repeat(6, 200px); 
-                grid-template-rows: repeat(6, 1fr); 
+                grid-template-columns: repeat(4, 200px); 
+                grid-template-rows: repeat(5, 1fr); 
                 gap: 5px;
             }
 
@@ -290,13 +289,10 @@
         <button id="btnHtml">HTML2CAVANS - SVG</button>
         <button id="btnHtml_canvas">HTML2CAVANS - CANVAS</button>
         <button id="btnDom">DOM-TO-IMAGE</button>
-        <!-- <div>
-            <h3 style="color: #000">Hello world!</h3>
-        </div>
         <div>
             <h3 style="font-weight: bold;">Filter</h3>
             <img src="./media/a.png" class="filter-test">
-        </div> -->
+        </div>
         <form action="/" onsubmit="javascript:void(0)">
             <div id="capture" class="grid">
                 <div>
@@ -423,7 +419,7 @@
                 </div>
             </div>
         </div>
-        <!-- <div>
+        <div>
             <p>외부 No-Cors</p>
             <div style="display: grid; grid-template-columns: 300px 400px 400px 300px; grid-template-rows: 300px; gap: 20px;">
                 <div>
@@ -439,7 +435,7 @@
                     <audio width="300" height="300" controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" crossorigin="anonymous"></audio>
                 </div>
             </div>
-        </div> -->
+        </div>
         <h3 style="font-weight: bold;">writing-mode</h3>
         <div>
             <table>
@@ -1042,52 +1038,50 @@
                 galley of type and scrambled it to make a type specimen book.
             </span>
         </div>
-		<div>
-            <h3 style="font-weight: bold;">font-variant-ligatures</h3>
-            <p class="normal">
-            normal<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="none">
-            none<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="common-ligatures">
-            common-ligatures<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="no-common-ligatures">
-            no-common-ligatures<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="discretionary-ligatures">
-            discretionary-ligatures<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="no-discretionary-ligatures">
-            no-discretionary-ligatures<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="historical-ligatures">
-            historical-ligatures<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="no-historical-ligatures">
-            no-historical-ligatures<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="contextual">
-            contextual<br />
-            if fi ff tf ft jf fj
-            </p>
-            <p class="no-contextual">
-            no-contextual<br />
-            if fi ff tf ft jf fj
-            </p>
+        <div>
+          <h3 style="font-weight: bold;">font-variant-ligatures</h3>
+          <p class="normal">
+          normal<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="none">
+          none<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="common-ligatures">
+          common-ligatures<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="no-common-ligatures">
+          no-common-ligatures<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="discretionary-ligatures">
+          discretionary-ligatures<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="no-discretionary-ligatures">
+          no-discretionary-ligatures<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="historical-ligatures">
+          historical-ligatures<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="no-historical-ligatures">
+          no-historical-ligatures<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="contextual">
+          contextual<br />
+          if fi ff tf ft jf fj
+          </p>
+          <p class="no-contextual">
+          no-contextual<br />
+          if fi ff tf ft jf fj
+          </p>
         </div>
-        <div style="width: 100px; height: 100px;"></div>
         <script>
-
             const filedownload = (canvas, filename) => {
                 const download = document.createElement('a');
                 download.display = 'none';
@@ -1110,24 +1104,16 @@
                     console.time('timer');
                     let options = {
                         foreignObjectRendering: true,
-                        proxy : 'http://localhost:3001',
-                        // ignoreElements : (element) => {
-                        //     const canvas = element.id === 'canvas';
-                        //     // true를 반환하면 무시한다.
-                        //     return !!canvas;
-                        // }
+                        proxy : 'http://localhost:3000',
+                        // ignoreElements : myFilter
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
                 });
                 document.getElementById('btnHtml_canvas').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
-                        proxy : 'http://localhost:3001',
-                        // ignoreElements : (element) => {
-                        //     const canvas = element.id === 'canvas';
-                        //     // true를 반환하면 무시한다.
-                        //     return !!canvas;
-                        // }
+                      proxy : 'http://localhost:3000',
+                      // ignoreElements : myFilter
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
@@ -1163,7 +1149,7 @@
                 let image = new Image();
                 image.width = 100;
                 image.height = 100;
-                image.crossOrigin = 'anonymous';
+                image.crossOrigin = 'anonymous'; // crossOrigin anonymous속성을 지정해야 외부 이미지 로드 가능
                 // image.src = './media/a.png'
                 // 외부 이미지 X
                 image.src = 'https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg'
