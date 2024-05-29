@@ -172,6 +172,7 @@ export class DocumentCloner {
             }
 
             if (this.options.inlineImages) {
+                console.log('document-cloner ----- node.src', (node as HTMLImageElement).src);
                 this.context.cache.has(clone.src) && this.context.cache.match(clone.src).then(img => clone.src = img.src);
             }
         }
@@ -393,9 +394,6 @@ export class DocumentCloner {
             if (isInputElement(node) && isInputElement(clone)) {
                 // 타입체크
                 const type = node.type;
-                if (type === 'text' || type === 'number' || type === 'color') {
-                    clone.setAttribute('value', node.value);
-                }
                 switch (type) {
                     case 'submit':
                     case 'button':

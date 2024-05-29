@@ -85,8 +85,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
     const foreignObjectRendering = opts.foreignObjectRendering ?? false;
 
-    foreignObjectRendering && parseTree(context, element);
-
     const cloneOptions: CloneConfigurations = {
         allowTaint: opts.allowTaint ?? false,
         onclone: opts.onclone,
@@ -95,18 +93,19 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         copyStyles: foreignObjectRendering
     };
 
-    context.logger.debug(
-        `Starting document clone with size ${windowBounds.width}x${
-            windowBounds.height
-        } scrolled to ${-windowBounds.left},${-windowBounds.top}`
-    );
+    context.logger.debug(`Starting document clone with size ${windowBounds.width}x${windowBounds.height} scrolled to ${-windowBounds.left},${-windowBounds.top}`);
 
     // Font가져오기.
-    const fontStyle = await loadFontStyle();
+    if (foreignObjectRendering) {
+        parseTree(context, element);
+        const fontStyle = await loadFontStyle();
 
-    if (fontStyle != null) {
-        cloneOptions.fontStyle = fontStyle;
+        if (fontStyle != null) {
+            cloneOptions.fontStyle = fontStyle;
+        }
     }
+
+
 
     const documentCloner = new DocumentCloner(context, element, cloneOptions);
     const clonedElement = documentCloner.clonedReferenceElement;
