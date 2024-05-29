@@ -7,8 +7,7 @@
         <script src="./media/dom-to-image.js"></script>
         <script src="../dist/html2canvas.js"></script>
         <link rel="stylesheet" href="./common.css" />
-        <link rel="stylesheet" href="./test.css">
-        <!-- <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" crossorigin="anonymous"> -->
+        <link rel="stylesheet" href="./test.css" />
     </head>
     <body>
         <button id="btnHtml">HTML2CAVANS - SVG</button>
@@ -105,7 +104,6 @@
                 <div>
                     <p>image</p>
                     <input type="image" src="./media/lake.jpg" alt="" width="100" height="100">
-                    <input type="image" src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg" alt="" width="100" height="100">
                 </div>
             </div>
         </form>
@@ -142,23 +140,6 @@
                 </div>
                 <div>
                     <audio width="300" height="300" controls src="./media/t-rex-roar.mp3"></audio>
-                </div>
-            </div>
-        </div>
-        <div>
-            <p>외부 No-Cors</p>
-            <div style="display: grid; grid-template-columns: 300px 400px 400px 300px; grid-template-rows: 300px; gap: 20px;">
-                <div>
-                    <img width="300" height="300" src="https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg" />
-                </div>
-                <div>
-                    <video controls width="250">
-                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
-                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
-                    </video>
-                </div>
-                <div>
-                    <audio width="300" height="300" controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" ></audio>
                 </div>
             </div>
         </div>
@@ -758,54 +739,54 @@
         </div>
         <div>
             <h3 style="font-weight: bold;">box-decoration-break</h3>
-            <span class="span1"
-                ><b>inline-slice</b> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+            <span class="span1">
+                <b>inline-slice</b> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
                 Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
                 galley of type and scrambled it to make a type specimen book.
             </span>
         </div>
         <div>
-          <h3 style="font-weight: bold;">font-variant-ligatures</h3>
-          <p class="normal">
-          normal<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="none">
-          none<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="common-ligatures">
-          common-ligatures<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="no-common-ligatures">
-          no-common-ligatures<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="discretionary-ligatures">
-          discretionary-ligatures<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="no-discretionary-ligatures">
-          no-discretionary-ligatures<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="historical-ligatures">
-          historical-ligatures<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="no-historical-ligatures">
-          no-historical-ligatures<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="contextual">
-          contextual<br />
-          if fi ff tf ft jf fj
-          </p>
-          <p class="no-contextual">
-          no-contextual<br />
-          if fi ff tf ft jf fj
-          </p>
+            <h3 style="font-weight: bold;">font-variant-ligatures</h3>
+            <p class="normal">
+            normal<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="none">
+            none<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="common-ligatures">
+            common-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="no-common-ligatures">
+            no-common-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="discretionary-ligatures">
+            discretionary-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="no-discretionary-ligatures">
+            no-discretionary-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="historical-ligatures">
+            historical-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="no-historical-ligatures">
+            no-historical-ligatures<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="contextual">
+            contextual<br />
+            if fi ff tf ft jf fj
+            </p>
+            <p class="no-contextual">
+            no-contextual<br />
+            if fi ff tf ft jf fj
+            </p>
         </div>
         <script>
             const filedownload = (canvas, filename) => {
@@ -822,6 +803,7 @@
             }
 
             window.onload = function () {
+
                 document.getElementById('btnHtml').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
@@ -830,13 +812,15 @@
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
                 });
+
                 document.getElementById('btnHtml_canvas').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
-                      proxy : 'http://localhost:3000',
+                        proxy : 'http://localhost:3000',
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
+
                 document.getElementById('btnDom').addEventListener('click', () => {
                     console.time('timer');
                     domtoimage
@@ -864,8 +848,7 @@
                 image.width = 100;
                 image.height = 100;
                 image.crossOrigin = 'anonymous'; // crossOrigin anonymous속성을 지정해야 외부 이미지 로드 가능
-                // 외부 이미지 X
-                image.src = 'https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg'
+                image.src = './media/a.png'
 
                 image.onload = function() {
                     ctx.drawImage(image, 0, 0);

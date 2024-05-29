@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="./media/dom-to-image.js"></script>
+        <script src="../dist/html2canvas.js"></script>
+        <link rel="stylesheet" href="./common.css" />
+        <link rel="stylesheet" href="./test.css">
+    </head>
+    <body>
+        <button id="btnHtml">HTML2CAVANS - SVG</button>
+        <button id="btnHtml_canvas">HTML2CAVANS - CANVAS</button>
+        <button id="btnDom">DOM-TO-IMAGE</button>
+        <div>
+            <p>외부 No-Cors</p>
+            <div style="display: grid; grid-template-columns: 300px 400px 400px 300px; grid-template-rows: 300px; gap: 20px;">
+                <div>
+                    <img width="300" height="300" src="https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg" />
+                </div>
+                <div>
+                    <video controls width="250">
+                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
+                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+                    </video>
+                </div>
+                <div>
+                    <audio width="300" height="300" controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" ></audio>
+                </div>
+            </div>
+        </div>
+        <script>
+            const filedownload = (canvas, filename) => {
+                const download = document.createElement('a');
+                download.display = 'none';
+                download.href = typeof canvas !== 'string'
+                    ? canvas.toDataURL()
+                    : canvas;
+                download.download = filename;
+                document.body.append(download);
+                download.click();
+                download.remove();
+                console.timeEnd('timer');
+            }
+
+            window.onload = function () {
+                document.getElementById('btnHtml').addEventListener('click', () => {
+                    console.time('timer');
+                    let options = {
+                        foreignObjectRendering: true,
+                        proxy : 'http://localhost:3000',
+                    };
+                    html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
+                });
+                document.getElementById('btnHtml_canvas').addEventListener('click', () => {
+                    console.time('timer');
+                    let options = {
+                      proxy : 'http://localhost:3000',
+                    };
+                    html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
+                });
+                document.getElementById('btnDom').addEventListener('click', () => {
+                    console.time('timer');
+                    domtoimage
+                        .toPng(document.body)
+                        .then((imageUrl) => {
+                            let image = new Image();
+                            image.src = imageUrl;
+
+                            image.onload = function () {
+                                filedownload(imageUrl, 'dom-to-image');
+                            };
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                });
+            };
+        </script>
+    </body>
+</html>
