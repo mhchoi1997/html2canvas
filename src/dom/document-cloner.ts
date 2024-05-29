@@ -259,32 +259,8 @@ export class DocumentCloner {
     }
 
     createVideoClone(video: HTMLVideoElement): HTMLImageElement {
-        const canvas = video.ownerDocument.createElement('canvas');
-
-        canvas.width = video.offsetWidth;
-        canvas.height = video.offsetHeight;
-        const ctx = canvas.getContext('2d');
         const image = new Image();
-        // image.setAttribute('crossorigin', 'anonymous');
-
-        try {
-            if (ctx) {
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                if (!this.options.allowTaint) {
-                    ctx.getImageData(0, 0, canvas.width, canvas.height);
-                }
-                image.src = canvas.toDataURL('image/png');
-            }
-            return image;
-        } catch (e) {
-            this.context.logger.info(`Unable to clone video as it is tainted`, video);
-        }
-
-        const blankCanvas = video.ownerDocument.createElement('canvas');
-
-        blankCanvas.width = video.offsetWidth;
-        blankCanvas.height = video.offsetHeight;
-        image.src = blankCanvas.toDataURL();
+        console.warn(video);
         return image;
     }
 

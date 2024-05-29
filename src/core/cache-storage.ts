@@ -55,6 +55,22 @@ export class Cache {
         return result;
     }
 
+    addVideo(src: string, width: number, height: number): Promise<void> {
+        const result = Promise.resolve();
+        if (this.has(src)) {
+            return result;
+        }
+
+        if (isBlobImage(src) || isRenderable(src)) {
+            (this._cache[src] = this.loadVideo(src, width, height)).catch(() => {
+                // prevent unhandled rejection
+            });
+            return result;
+        }
+
+        return result;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     match(src: string): Promise<any> {
         return this._cache[src];
@@ -77,57 +93,151 @@ export class Cache {
         });
     }
 
-    private async loadImage(key: string) {
-        const isSameOrigin = CacheStorage.isSameOrigin(key);
-        const useCORS =
-            !isInlineImage(key) && this._options.useCORS === true && FEATURES.SUPPORT_CORS_IMAGES && !isSameOrigin;
-        const useProxy =
-            !isInlineImage(key) &&
-            !isSameOrigin &&
-            !isBlobImage(key) &&
-            typeof this._options.proxy === 'string' &&
-            FEATURES.SUPPORT_CORS_XHR &&
-            !useCORS;
-        if (
-            !isSameOrigin &&
-            this._options.allowTaint === false &&
-            !isInlineImage(key) &&
-            !isBlobImage(key) &&
-            !useProxy &&
-            !useCORS
-        ) {
-            return;
-        }
+    async sameVideo(key: string, width: number, height: number): Promise<string> {
+        return new Promise(resolve => {
+            const video = document.createElement('video');
+            video.src = key;
+            video.controls = true;
 
-        let src = key;
-        if (useProxy) {
-            src = await this.proxy(src);
-        } else {
-            src = await this.sameImage(src);
-        }
+            video.addEventListener('loadeddata', function() {
+                console.log('비디오 준비 완료', video);
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = width;
+                canvas.height = height;
 
-        this.context.logger.debug(`Added image ${key.substring(0, 256)}`);
+                context?.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        return await new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-            //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
-            if (isInlineBase64Image(src) || useCORS) {
-                img.crossOrigin = 'anonymous';
-            }
-            img.src = src;
-            if (img.complete === true) {
-                // Inline XML images may fail to parse, throwing an Error later on
-                setTimeout(() => resolve(img), 500);
-            }
-            if (this._options.imageTimeout > 0) {
-                setTimeout(
-                    () => reject(`Timed out (${this._options.imageTimeout}ms) loading image`),
-                    this._options.imageTimeout
-                );
-            }
+                resolve(canvas.toDataURL());
+
+            });
         });
+    }
+
+    private async loadVideo(key: string, width: number, height: number) {
+        try {
+            const isSameOrigin = CacheStorage.isSameOrigin(key);
+            const useCORS =
+                !isInlineImage(key) && this._options.useCORS === true && FEATURES.SUPPORT_CORS_IMAGES && !isSameOrigin;
+            const useProxy =
+                !isInlineImage(key) &&
+                !isSameOrigin &&
+                !isBlobImage(key) &&
+                typeof this._options.proxy === 'string' &&
+                FEATURES.SUPPORT_CORS_XHR &&
+                !useCORS;
+            if (
+                !isSameOrigin &&
+                this._options.allowTaint === false &&
+                !isInlineImage(key) &&
+                !isBlobImage(key) &&
+                !useProxy &&
+                !useCORS
+            ) {
+                return;
+            }
+    
+            let src = key;
+            if (useProxy) {
+                src = await this.proxy(src);
+            } else {
+                src = await this.sameVideo(src, width, height);
+            }
+
+            this.context.logger.debug(`Added image ${key.substring(0, 256)}`);
+    
+            return await new Promise((resolve, reject) => {
+                console.warn('loadVideo ----- promise', src);
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
+                if (isInlineBase64Image(src) || useCORS) {
+                    img.crossOrigin = 'anonymous';
+                }
+                img.src = src;
+                if (img.complete === true) {
+                    // Inline XML images may fail to parse, throwing an Error later on
+                    setTimeout(() => resolve(img), 500);
+                }
+                if (this._options.imageTimeout > 0) {
+                    setTimeout(
+                        () => { 
+                            console.warn('loadVideo ----- timeout ', this._options.imageTimeout, key);
+                            reject(`Timed out (${this._options.imageTimeout}ms) loading image`) },
+                        this._options.imageTimeout
+                    );
+                }
+            });
+        } catch (error: unknown) {
+            // 비동기 함수 내에서 reject상태일 때 로그를 확인한다.
+            if (error instanceof Error) {
+                console.warn(error.message);
+            }
+        }
+    }
+
+    private async loadImage(key: string) {
+        try {
+            const isSameOrigin = CacheStorage.isSameOrigin(key);
+            const useCORS =
+                !isInlineImage(key) && this._options.useCORS === true && FEATURES.SUPPORT_CORS_IMAGES && !isSameOrigin;
+            const useProxy =
+                !isInlineImage(key) &&
+                !isSameOrigin &&
+                !isBlobImage(key) &&
+                typeof this._options.proxy === 'string' &&
+                FEATURES.SUPPORT_CORS_XHR &&
+                !useCORS;
+            if (
+                !isSameOrigin &&
+                this._options.allowTaint === false &&
+                !isInlineImage(key) &&
+                !isBlobImage(key) &&
+                !useProxy &&
+                !useCORS
+            ) {
+                return;
+            }
+    
+            let src = key;
+            if (useProxy) {
+                src = await this.proxy(src);
+            } else {
+                src = await this.sameImage(src);
+            }
+
+            this.context.logger.debug(`Added image ${key.substring(0, 256)}`);
+    
+            return await new Promise((resolve, reject) => {
+                console.warn('loadImage ----- promise', src);
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
+                if (isInlineBase64Image(src) || useCORS) {
+                    img.crossOrigin = 'anonymous';
+                }
+                img.src = src;
+                if (img.complete === true) {
+                    // Inline XML images may fail to parse, throwing an Error later on
+                    setTimeout(() => resolve(img), 500);
+                }
+                if (this._options.imageTimeout > 0) {
+                    setTimeout(
+                        () => { 
+                            console.warn('loadImage ----- timeout ', this._options.imageTimeout, key);
+                            reject(`Timed out (${this._options.imageTimeout}ms) loading image`) },
+                        this._options.imageTimeout
+                    );
+                }
+            });
+        } catch (error: unknown) {
+            // 비동기 함수 내에서 reject상태일 때 로그를 확인한다.
+            if (error instanceof Error) {
+                console.warn(error.message);
+            }
+        }
     }
 
     has(key: string): boolean {
@@ -176,7 +286,10 @@ export class Cache {
             if (this._options.imageTimeout) {
                 const timeout = this._options.imageTimeout;
                 xhr.timeout = timeout;
-                xhr.ontimeout = () => reject(`Timed out (${timeout}ms) proxying ${key}`);
+                xhr.ontimeout = () => {
+                    console.warn('proxy ----- timeout ', timeout, key);
+                    reject(`Timed out (${timeout}ms) proxying ${key}`);
+                }
             }
 
             xhr.send();

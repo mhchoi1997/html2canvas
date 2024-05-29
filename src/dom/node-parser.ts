@@ -11,6 +11,7 @@ import {SelectElementContainer} from './elements/select-element-container';
 import {TextareaElementContainer} from './elements/textarea-element-container';
 import {IFrameElementContainer} from './replaced-elements/iframe-element-container';
 import {Context} from '../core/context';
+import { VideoElementContainer } from './replaced-elements/video-element-container';
 
 const LIST_OWNERS = ['OL', 'UL', 'MENU'];
 
@@ -54,6 +55,10 @@ const parseNodeTree = (context: Context, node: Node, parent: ElementContainer, r
 };
 
 const createContainer = (context: Context, element: Element): ElementContainer => {
+    if (isVideoElement(element)) {
+        return new VideoElementContainer(context, element);
+    }
+    
     if (isImageElement(element)) {
         return new ImageElementContainer(context, element);
     }
