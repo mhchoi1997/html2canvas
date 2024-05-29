@@ -105,8 +105,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
         }
     }
 
-
-
     const documentCloner = new DocumentCloner(context, element, cloneOptions);
     const clonedElement = documentCloner.clonedReferenceElement;
 
