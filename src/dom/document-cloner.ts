@@ -172,7 +172,6 @@ export class DocumentCloner {
             }
 
             if (this.options.inlineImages) {
-                console.log('document-cloner ----- node.src', (node as HTMLImageElement).src);
                 this.context.cache.has(clone.src) && this.context.cache.match(clone.src).then(img => clone.src = img.src);
             }
         }

@@ -46,11 +46,7 @@ export class Cache {
         }
 
         if (isBlobImage(src) || isRenderable(src)) {
-            (this._cache[src] = this.loadImage(src))
-            .then(() => {
-                console.log('this._cache -----', src);
-            })
-            .catch(() => {
+            (this._cache[src] = this.loadImage(src)).catch(() => {
                 // prevent unhandled rejection
             });
             return result;
