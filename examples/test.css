@@ -79,8 +79,8 @@
 
   .grid {
       padding: 10px;display: grid; 
-      grid-template-columns: repeat(4, 200px); 
-      grid-template-rows: repeat(5, 1fr); 
+      grid-template-columns: repeat(4, 300px); 
+      grid-template-rows: repeat(5, 0.5fr); 
       gap: 5px;
   }
 
