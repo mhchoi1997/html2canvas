@@ -320,9 +320,13 @@ export class DocumentCloner {
     }
 
     adjustHeadFontStyle(node: Node): void {
-        const fontStyle = this.options.fontStyle;
         // body내 스타일을 적용합시다.
-        if (node.nodeName === 'BODY' && fontStyle !== null && fontStyle !== undefined) {
+        if (!(node instanceof HTMLElement)) return;
+        
+        const fontStyle = this.options.fontStyle;
+        const isSameNode = node.id === this.referenceElement.id && node.className === this.referenceElement.className && node.tagName === this.referenceElement.tagName;
+
+        if (isSameNode && fontStyle !== null && fontStyle !== undefined) {
             const styleNode = document.createElement('style');
             node.appendChild(styleNode);
             styleNode.appendChild(document.createTextNode(fontStyle));
