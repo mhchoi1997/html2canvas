@@ -1,5 +1,6 @@
 import {Bounds} from '../css/layout/bounds';
 import {
+    isAudioElement,
     isBodyElement,
     isCanvasElement,
     isCustomElement,
@@ -388,6 +389,11 @@ export class DocumentCloner {
 
             if (node.scrollTop !== 0 || node.scrollLeft !== 0) {
                 this.scrolledElements.push([clone, node.scrollLeft, node.scrollTop]);
+            }
+
+            // audio는 스크린샷 렌더링 하지 않도록 숨김 처리한다.
+            if (isAudioElement(clone)) {
+                clone.style.display = 'none';
             }
 
             if (isInputElement(node) && isInputElement(clone)) {

@@ -6,6 +6,7 @@
         <title>Document</title>
         <script src="./media/dom-to-image.js"></script>
         <script src="../dist/html2canvas.js"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js"></script> -->
         <link rel="stylesheet" href="./common.css" />
         <link rel="stylesheet" href="./test.css">
     </head>
@@ -154,7 +155,7 @@
                     <img width="300" height="300" src="https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg" />
                 </div>
                 <div>
-                    <video controls width="300" height="300">
+                    <video controls width="300" height="300" crossorigin="anonymous">
                         <!-- 브라우저마다 비디오 포멧 지원이 다르기 때문에 source로 할당해야함. -->
                         <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
                         <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
