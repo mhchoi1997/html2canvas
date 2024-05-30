@@ -319,16 +319,16 @@ export class DocumentCloner {
         }
     }
 
-    adjustHeadFontStyle(node: Node): void {
+    adjustHeadFontStyle(clone: Node, node: HTMLElement | SVGElement): void {
         // body내 스타일을 적용합시다.
-        if (!(node instanceof HTMLElement)) return;
+        if (!(clone instanceof HTMLElement)) return;
         
         const fontStyle = this.options.fontStyle;
-        const isSameNode = node.id === this.referenceElement.id && node.className === this.referenceElement.className && node.tagName === this.referenceElement.tagName;
+        const isSameNode = node === this.referenceElement;
 
         if (isSameNode && fontStyle !== null && fontStyle !== undefined) {
             const styleNode = document.createElement('style');
-            node.appendChild(styleNode);
+            clone.appendChild(styleNode);
             styleNode.appendChild(document.createTextNode(fontStyle));
         }
     }
@@ -348,16 +348,13 @@ export class DocumentCloner {
             const clone = this.createElementClone(node);
 
             // 폰트 적용하기
-            this.adjustHeadFontStyle(clone);
+            this.adjustHeadFontStyle(clone, node);
             clone.style.transitionProperty = 'none';
 
             const style = window.getComputedStyle(node);
             const styleBefore = window.getComputedStyle(node, ':before');
             const styleAfter = window.getComputedStyle(node, ':after');
 
-            if (this.referenceElement === node && isHTMLElementNode(clone)) {
-                this.clonedReferenceElement = clone;
-            }
             if (isBodyElement(clone)) {
                 createPseudoHideStyles(clone);
             }
@@ -398,6 +395,10 @@ export class DocumentCloner {
             // audio는 스크린샷 렌더링 하지 않도록 숨김 처리한다.
             if (isAudioElement(clone)) {
                 clone.style.display = 'none';
+            }
+
+            if (this.referenceElement === node && isHTMLElementNode(clone)) {
+                this.clonedReferenceElement = clone;
             }
 
             if (isInputElement(node) && isInputElement(clone)) {
@@ -641,6 +642,7 @@ export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyl
                     url &&  context.cache.has(url) && context.cache.match(url).then(img => target.style.setProperty('background-image', `url(${img.src})`));
                 }
             }
+            
             target.style.setProperty(property, style.getPropertyValue(property));
         }
     }

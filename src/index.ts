@@ -120,14 +120,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
             ? parseDocumentSize(clonedElement.ownerDocument)
             : parseBounds(context, clonedElement);
 
-    // body의 offsetHeight보다 document.body.scrollHeight가 더 클 경우
-    let isBodyResize = false;
-    const elementHeight = element.getBoundingClientRect().height;
-
-    if (elementHeight < height) {
-        document.body.style.height = `${height}px`;
-        isBodyResize = true;
-    }
 
     const backgroundColor = parseBackgroundColor(context, clonedElement, opts.backgroundColor);
 
@@ -175,11 +167,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
     context.logger.debug(`Finished rendering`);
 
-    if (isBodyResize) {
-        isBodyResize = false;
-        // document.body에 적용한 height 초기화
-        document.body.style.height = '';
-    }
     return imageUrl;
 };
 
