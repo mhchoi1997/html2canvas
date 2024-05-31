@@ -72,6 +72,10 @@ export class ForeignObjectRenderer extends Renderer {
 
                         resolve(canvas);
                     };
+                })
+                .finally(() => {
+                    this.context.logger.debug('메모리 누수 방지를 위한 revorkObjectURL 호출');
+                    URL.revokeObjectURL(imgUrl); // createObjectURL으로 생성한 object url을 해제한다.
                 });
         });
     }

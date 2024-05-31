@@ -27,226 +27,45 @@
         <button id="btnHtml">HTML2CAVANS - SVG</button>
         <button id="btnHtml_canvas">HTML2CAVANS - CANVAS</button>
         <button id="btnDom">DOM-TO-IMAGE</button>
-        <div class="test1">
-            <div class="test2"></div>
-        </div>
-        <div
-            style="width: 200px; height: 200px; background: repeating-linear-gradient(white, yellow 20px, green 40px)"
-        ></div>
-        <div>
-            <p>background-blend-mode</p>
-            <div id="background-blend-mode" class="test3">
-                <p>background-blend-mode</p>
-            </div>
-        </div>
-        <div>
-            <p>box-shadow</p>
-            <div id="test1"></div>
-            <div id="test2"></div>
-        </div>
-        <div>
-            <p>font-feature-setting</p>
-            <div id="example-element" style="font-feature-settings: 'liga' 0">
-                <p>Difficult waffles</p>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td><span class="tabular">0O</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="tabular">3.14</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="tabular">2.71</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div>
-            <p>box-decoration-break</p>
-            <span class="span1"
-                ><b>inline-slice</b> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                galley of type and scrambled it to make a type specimen book.
-            </span>
-        </div>
-
-        <div id="capture" style="padding: 10px">
-            <div>
-                <h4 style="color: #000">Hello world!</h4>
-            </div>
-            <div>
-                <p>text</p>
-                <input type="text" />
-            </div>
-            <div>
-                <p>password</p>
-                <input type="password" />
-            </div>
-            <div>
-                <p>number</p>
-                <input type="number" />
-            </div>
-            <div>
-                <p>email</p>
-                <input type="email" />
-            </div>
-            <div>
-                <p>tel</p>
-                <input type="tel" />
-            </div>
-            <div>
-                <p>search</p>
-                <input type="search" />
-            </div>
-            <div>
-                <p>button(input)</p>
-                <input type="button" value="input" />
-                <input type="submit" />
-                <input type="reset" />
-            </div>
-            <div>
-                <p>checkbox</p>
-                <input type="checkbox" />
-            </div>
-            <div>
-                <p>radio</p>
-                <input type="radio" id="a1" name="radio" />
-                <input type="radio" id="a2" name="radio" />
-            </div>
-            <div>
-                <p>date</p>
-                <input type="date" name="" id="" />
-            </div>
-            <div>
-                <p>range</p>
-                <input type="range" name="" id="" />
-            </div>
-            <input type="file" />
-            <div><p>file</p></div>
-            <div>
-                <p>textarea</p>
-                <textarea name="" id=""></textarea>
-            </div>
-            <div>
-                <p>svg</p>
-                <svg width="250" height="200">
-                    <rect
-                        width="200"
-                        height="150"
-                        x="20"
-                        y="20"
-                        rx="20"
-                        ry="20"
-                        stroke="orange"
-                        stroke-width="5"
-                        fill="yellow"
-                    />
-                </svg>
-            </div>
-            <div>
-                <p>select</p>
-                <select name="" id="">
-                    <option value="a1">A1</option>
-                    <option value="a2">A2</option>
-                </select>
-            </div>
-            <div>
-                <p>로컬 리소스</p>
-                <div style="display: flex">
-                    <div>
-                        <img width="300" height="300" src="./media/a.png" alt="임시 이미지" />
-                        <img src="./media/happy.svg" alt="" srcset="" width="300" height="300" />
-                    </div>
-                    <div>
-                        <video width="300" height="300" src="./media/flower.webm" controls></video>
-                    </div>
-                    <div>
-                        <audio width="300" height="300" controls src="./media/t-rex-roar.mp3"></audio>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <p>iframe : 제약사항 추가해야할듯...</p>
-                <!-- <iframe src="./demo.html" frameborder="0"></iframe> -->
-            </div>
-            <div>
-                <p>외부 No-Cors</p>
-                <div
-                    style="
-                        display: grid;
-                        grid-template-columns: 300px 400px 400px 300px;
-                        grid-template-rows: 300px;
-                        gap: 20px;
-                    "
-                >
-                    <!-- <div>
-                        <img
-                            width="300"
-                            height="300"
-                            src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189"
-                            alt="임시 이미지"
-                            style="height: 100%; width: 100%; border: 2px dotted #888"
-                            crossorigin="anonymous"
-                        />
-                    </div> -->
-                    <!-- <div>
-                        <video
-                            width="400"
-                            height="300"
-                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
-                            controls
-                            crossorigin="anonymous"
-                        ></video>
-                    </div>
-                    <div>
-                        <video
-                            width="400"
-                            height="300"
-                            src="https://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4"
-                            controls
-                            crossorigin="anonymous"
-                        ></video>
-                    </div>
-                    <div>
-                        <audio
-                            width="300"
-                            height="300"
-                            controls
-                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
-                            crossorigin="anonymous"
-                        ></audio>
-                    </div> -->
-                </div>
-            </div>
+        <div style="width: 100%; height: 300px; overflow-x: hidden; overflow-y: scroll">
+            <div style="background-color: red; width: 100%; height: 100px"></div>
+            <div style="background-color: orange; width: 100%; height: 100px"></div>
+            <div style="background-color: yellow; width: 100%; height: 100px"></div>
+            <div style="background-color: green; width: 100%; height: 100px"></div>
+            <div style="background-color: blue; width: 100%; height: 100px"></div>
+            <div style="background-color: navy; width: 100%; height: 100px"></div>
+            <div style="background-color: purple; width: 100%; height: 100px"></div>
         </div>
         <script>
+            const filedownload = (canvas, filename) => {
+                const download = document.createElement('a');
+                download.display = 'none';
+                download.href = typeof canvas !== 'string' ? canvas.toDataURL() : canvas;
+                download.download = filename;
+                document.body.append(download);
+                download.click();
+                download.remove();
+                console.timeEnd('timer');
+            };
+
             window.onload = function () {
                 document.getElementById('btnHtml').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
-                        scale: 1,
                         foreignObjectRendering: true,
-                        allowTaint: true,
-                        useCORS: true // 외부 이미지를 불러오기 위해서는 useCORS를 사용해야함.
-                    }; // svg방식 렌더링
-                    html2canvas(document.body, options).then((imageUrl) => {
-                        const anchor = document.createElement('a');
-                        anchor.display = 'none';
-                        // fork후 수정한 버전은 imageURL으로 반환하도록 수정
-                        // anchor.href = imageUrl.toDataURL();
-                        anchor.href = imageUrl;
-                        anchor.download = 'html2canvas_canvas';
-                        document.body.append(anchor);
-                        anchor.click();
-                        anchor.remove();
-                        console.timeEnd('timer');
-                    });
+                        proxy: 'http://localhost:3000'
+                    };
+                    html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
+                });
+                document.getElementById('btnHtml_canvas').addEventListener('click', () => {
+                    console.time('timer');
+                    let options = {
+                        proxy: 'http://localhost:3000'
+                    };
+                    html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
                 document.getElementById('btnDom').addEventListener('click', () => {
-                    // domtoimage는 다양한 형태로 변환 가능 svg, blob, png, jpeg, ...
-                    // 기본적으로 배경색을 지정안하면 투명색으로 표시함.
+                    console.time('timer');
                     domtoimage
                         .toPng(document.body)
                         .then((imageUrl) => {
@@ -254,13 +73,7 @@
                             image.src = imageUrl;
 
                             image.onload = function () {
-                                const anchor = document.createElement('a');
-                                anchor.display = 'none';
-                                anchor.href = imageUrl;
-                                anchor.download = 'dom-to-image';
-                                document.body.append(anchor);
-                                anchor.click();
-                                anchor.remove();
+                                filedownload(imageUrl, 'dom-to-image');
                             };
                         })
                         .catch((error) => {
