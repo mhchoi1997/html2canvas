@@ -173,7 +173,8 @@ export class DocumentCloner {
             }
 
             if (this.options.inlineImages) {
-                this.context.cache.has(clone.src) && this.context.cache.match(clone.src).then(img => clone.src = img.src);
+                this.context.cache.has(clone.src) &&
+                    this.context.cache.match(clone.src).then((img) => (clone.src = img.src));
             }
         }
 
@@ -322,7 +323,7 @@ export class DocumentCloner {
     adjustHeadFontStyle(clone: Node, node: HTMLElement | SVGElement): void {
         // body내 스타일을 적용합시다.
         if (!(clone instanceof HTMLElement)) return;
-        
+
         const fontStyle = this.options.fontStyle;
         const isSameNode = node === this.referenceElement;
 
@@ -628,7 +629,12 @@ const ignoredStyleProperties = [
     'content' // Safari shows pseudoelements if content is set
 ];
 
-export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyleDeclaration, target: T, options: CloneConfigurations, context: Context): T => {
+export const copyCSSStyles = <T extends HTMLElement | SVGElement>(
+    style: CSSStyleDeclaration,
+    target: T,
+    options: CloneConfigurations,
+    context: Context
+): T => {
     // Edge does not provide value for cssText
     for (let i = style.length - 1; i >= 0; i--) {
         const property = style.item(i);
@@ -639,11 +645,19 @@ export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyl
                     // 만약 css background-image가 있다면?
                     const url = style.backgroundImage.match(urlRegExp)?.[1];
                     // 스타일 변경은 Element.style.setProperty(styleName, value) 형태로 지정할것.
-                    url &&  context.cache.has(url) && context.cache.match(url).then(img => target.style.setProperty('background-image', `url(${img.src})`));
+                    url &&
+                        context.cache.has(url) &&
+                        context.cache.match(url).then((img) => {
+                            target.style.setProperty('background-image', `url(${img.src})`);
+                        });
                 }
+            } else if (property === 'background-position') {
+                // background-position이 right 10px 50%일 경우 제대로 스타일 적용이 안됨.
+                target.style.setProperty('background-position-x', style.getPropertyValue('background-position-x'));
+                target.style.setProperty('background-position-y', style.getPropertyValue('background-position-y'));
+            } else {
+                target.style.setProperty(property, style.getPropertyValue(property));
             }
-            
-            target.style.setProperty(property, style.getPropertyValue(property));
         }
     }
     return target;
