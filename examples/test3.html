@@ -6,10 +6,10 @@
         <title>Document</title>
         <script src="../dist/html2canvas.js"></script>
         <link rel="stylesheet" href="./common.css" />
-        <link rel="stylesheet" href="./test.css">
+        <link rel="stylesheet" href="./test.css" />
     </head>
     <body>
-        <div style="height: 100%; width: 100%; overflow: hidden;">
+        <div style="height: 100%; width: 100%; overflow: hidden">
             <button id="btnHtml">HTML2CAVANS - SVG</button>
             <button id="btnHtml_canvas">HTML2CAVANS - CANVAS</button>
             <form action="/" onsubmit="javascript:void(0)">
@@ -67,7 +67,7 @@
                     </div>
                     <div>
                         <p>textarea</p>
-                        <textarea name="" ></textarea>
+                        <textarea name=""></textarea>
                     </div>
                     <div>
                         <p>select</p>
@@ -78,34 +78,40 @@
                     </div>
                     <div>
                         <p>month</p>
-                        <input type="month">
+                        <input type="month" />
                     </div>
                     <div>
                         <p>datetime</p>
-                        <input type="datetime">
+                        <input type="datetime" />
                     </div>
                     <div>
                         <p>datetime-local</p>
-                        <input type="datetime-local">
+                        <input type="datetime-local" />
                     </div>
                     <div>
                         <p>url</p>
-                        <input type="url">
+                        <input type="url" />
                     </div>
                     <div>
                         <p>week</p>
-                        <input type="week">
+                        <input type="week" />
                     </div>
                     <div>
                         <p>image</p>
-                        <input type="image" src="./media/lake.jpg" alt="" width="100" height="100">
-                        <input type="image" src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg" alt="" width="100" height="100">
+                        <input type="image" src="./media/lake.jpg" alt="" width="100" height="100" />
+                        <input
+                            type="image"
+                            src="https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg"
+                            alt=""
+                            width="100"
+                            height="100"
+                        />
                     </div>
                 </div>
             </form>
-            <div style="display: flex;">
+            <div style="display: flex">
                 <div>
-                  <h3 style="font-weight: bold;">Svg</h3>
+                    <h3 style="font-weight: bold">Svg</h3>
                     <svg width="250" height="200">
                         <rect
                             width="200"
@@ -121,92 +127,99 @@
                     </svg>
                 </div>
                 <div id="canvas">
-                  <h3 style="font-weight: bold;">Canvas</h3>
+                    <h3 style="font-weight: bold">Canvas</h3>
                 </div>
                 <div>
-                  <h3 style="font-weight: bold;">Filter</h3>
-                  <img src="./media/a.png" class="filter-test" width="250" height="250">
+                    <h3 style="font-weight: bold">Filter</h3>
+                    <img src="./media/a.png" class="filter-test" width="250" height="250" />
                 </div>
             </div>
             <div>
                 <p>로컬 리소스</p>
-                <div  style="display: grid; grid-template-columns: 300px 400px 400px 300px; grid-template-rows: 300px; gap: 20px;">
+                <div style="display: grid; grid-template-rows: 300px; gap: 20px">
                     <div>
                         <img width="300" height="300" src="./media/a.png" alt="임시 이미지" />
                     </div>
                     <div>
                         <video width="300" height="300" controls>
-                          <source src="./media/flower.webm"/>
+                            <source src="./media/flower.webm" />
                         </video>
                     </div>
                     <div>
                         <audio width="300" height="300" controls>
-                          <source src="./media/t-rex-roar.mp3">
+                            <source src="./media/t-rex-roar.mp3" />
                         </audio>
                     </div>
                 </div>
             </div>
             <div>
                 <p>외부 No-Cors</p>
-                <div style="display: grid; grid-template-columns: 300px 400px 400px 300px; grid-template-rows: 300px; gap: 20px;">
+                <div style="display: grid; grid-template-rows: 300px; gap: 20px">
                     <div>
-                        <img width="300" height="300" src="https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg" />
+                        <img
+                            width="300"
+                            height="300"
+                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg"
+                        />
                     </div>
                     <div>
                         <video controls width="300" height="300" crossorigin="anonymous">
                             <!-- 브라우저마다 비디오 포멧 지원이 다르기 때문에 source로 할당해야함. -->
-                            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
-                            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+                            <source
+                                src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
+                                type="video/webm"
+                            />
+                            <source
+                                src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+                                type="video/mp4"
+                            />
                         </video>
                     </div>
                     <div>
                         <audio width="300" height="300" controls>
-                          <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3">
+                            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" />
                         </audio>
                     </div>
                 </div>
             </div>
             <div>
-                <h3 style="font-weight: bold;">virtual element</h3>
+                <h3 style="font-weight: bold">virtual element</h3>
                 <p class="virtual-element">
                     가상요소로 텍스트 앞, 뒤 이미지 넣기<br />
-                    가상 요소자를 사용하면 HTML 구조를 변경하지 않고도 스타일을 적용할 수
-                    있고<br />
-                    요소를 동적으로 생성하거나 특정 위치에 스타일을 추가할 수 있어서 구조의
-                    유연성 있다는데<br />
-                    어떨 때 사용하면 효율이 높을까? 그냥 HTML을 직접 생성하는 것과 비교했을
-                    때의 이점이 언제 존재할까?
+                    가상 요소자를 사용하면 HTML 구조를 변경하지 않고도 스타일을 적용할 수 있고<br />
+                    요소를 동적으로 생성하거나 특정 위치에 스타일을 추가할 수 있어서 구조의 유연성 있다는데<br />
+                    어떨 때 사용하면 효율이 높을까? 그냥 HTML을 직접 생성하는 것과 비교했을 때의 이점이 언제 존재할까?
                 </p>
-            </div>        
+            </div>
         </div>
 
         <script>
             const filedownload = (canvas, filename) => {
                 const download = document.createElement('a');
                 download.display = 'none';
-                download.href = typeof canvas !== 'string'
-                    ? canvas.toDataURL()
-                    : canvas;
+                download.href = typeof canvas !== 'string' ? canvas.toDataURL() : canvas;
                 download.download = filename;
                 document.body.append(download);
                 download.click();
                 download.remove();
                 console.timeEnd('timer');
-            }
+            };
 
             window.onload = function () {
                 document.getElementById('btnHtml').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
                         foreignObjectRendering: true,
-                        proxy : 'http://localhost:3000',
+                        proxy: 'http://localhost:3000',
+                        scale: 1
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_svg'));
                 });
                 document.getElementById('btnHtml_canvas').addEventListener('click', () => {
                     console.time('timer');
                     let options = {
-                      proxy : 'http://localhost:3000',
+                        proxy: 'http://localhost:3000',
+                        scale: 1
                     };
                     html2canvas(document.body, options).then((canvas) => filedownload(canvas, 'html2canvas_canvas'));
                 });
@@ -238,12 +251,12 @@
                 image.height = 100;
                 image.crossOrigin = 'anonymous'; // crossOrigin anonymous속성을 지정해야 외부 이미지 로드 가능
                 // 외부 이미지 X
-                image.src = 'https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg'
+                image.src = 'https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg';
 
-                image.onload = function() {
+                image.onload = function () {
                     ctx.drawImage(image, 0, 0);
-                    document.querySelector('#canvas').append(canvas)
-                }
+                    document.querySelector('#canvas').append(canvas);
+                };
             };
         </script>
     </body>
