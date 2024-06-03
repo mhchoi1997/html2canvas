@@ -629,6 +629,25 @@ const ignoredStyleProperties = [
     'content' // Safari shows pseudoelements if content is set
 ];
 
+const convertImageToBase64 = <T extends HTMLElement | SVGElement>(
+    target: T,
+    context: Context,
+    style: CSSStyleDeclaration,
+    options: CloneConfigurations
+) => {
+    if (!options.inlineImages) return;
+    const urlRegExp = /url\(["']?(.*?)["']?\)/;
+    // 만약 css background-image가 있다면?
+    const url = style.backgroundImage.match(urlRegExp)?.[1];
+    // 스타일 변경은 Element.style.setProperty(styleName, value) 형태로 지정할것.
+    url &&
+        context.cache.has(url) &&
+        context.cache.match(url).then((img) => {
+            // img.src는 base64로 되어있음.
+            target.style.setProperty('background-image', `url(${img.src})`);
+        });
+};
+
 export const copyCSSStyles = <T extends HTMLElement | SVGElement>(
     style: CSSStyleDeclaration,
     target: T,
@@ -639,24 +658,18 @@ export const copyCSSStyles = <T extends HTMLElement | SVGElement>(
     for (let i = style.length - 1; i >= 0; i--) {
         const property = style.item(i);
         if (ignoredStyleProperties.indexOf(property) === -1) {
-            if (property === 'background-image') {
-                if (options.inlineImages) {
-                    const urlRegExp = /url\(["']?(.*?)["']?\)/;
-                    // 만약 css background-image가 있다면?
-                    const url = style.backgroundImage.match(urlRegExp)?.[1];
-                    // 스타일 변경은 Element.style.setProperty(styleName, value) 형태로 지정할것.
-                    url &&
-                        context.cache.has(url) &&
-                        context.cache.match(url).then((img) => {
-                            target.style.setProperty('background-image', `url(${img.src})`);
-                        });
-                }
-            } else if (property === 'background-position') {
-                // background-position이 right 10px 50%일 경우 제대로 스타일 적용이 안됨.
-                target.style.setProperty('background-position-x', style.getPropertyValue('background-position-x'));
-                target.style.setProperty('background-position-y', style.getPropertyValue('background-position-y'));
-            } else {
-                target.style.setProperty(property, style.getPropertyValue(property));
+            switch (property) {
+                case 'background-image':
+                    // 기존 이미지 경로를 base64로 대체한다.
+                    convertImageToBase64(target, context, style, options);
+                    break;
+                case 'background-position':
+                    // background-position이 right 10px 50%일 경우 제대로 스타일 적용이 안됨.
+                    target.style.setProperty('background-position-x', style.getPropertyValue('background-position-x'));
+                    target.style.setProperty('background-position-y', style.getPropertyValue('background-position-y'));
+                    break;
+                default:
+                    target.style.setProperty(property, style.getPropertyValue(property));
             }
         }
     }
